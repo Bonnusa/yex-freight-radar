@@ -1,0 +1,16 @@
+{
+  "name": "Yex Freight Radar",
+  "short_name": "Yex Radar",
+  "description": "Shippers, carriers and markets on the East Coast. Clientes, transportistas y mercados en la Costa Este.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EDF0ED",
+  "theme_color": "#167A4C",
+  "lang": "es",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
