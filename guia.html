@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#167A4C">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<title>Guía de Yex Radar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#EDF0ED; --surface:#FFFFFF; --surface2:#F5F7F5; --ink:#16201B; --ink2:#4E5A53; --ink3:#7C877F;
+  --line:#D3D9D4; --line2:#E4E8E4;
+  --accent:#167A4C; --accent-ink:#FFFFFF; --accent-soft:#DDEFE4;
+  --hot:#B8371B; --cold:#2F6DB3;
+  --shadow:0 1px 2px rgba(20,30,24,.06), 0 8px 24px rgba(20,30,24,.08);
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111915; --surface:#1A2420; --surface2:#212D27; --ink:#EAF0EB; --ink2:#AAB7AE; --ink3:#7E8B83;
+    --line:#33423A; --line2:#28352E;
+    --accent:#3EC17E; --accent-ink:#0B1A12; --accent-soft:#1E3A2B;
+    --hot:#E0714A; --cold:#5A8FC4;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111915; --surface:#1A2420; --surface2:#212D27; --ink:#EAF0EB; --ink2:#AAB7AE; --ink3:#7E8B83;
+  --line:#33423A; --line2:#28352E;
+  --accent:#3EC17E; --accent-ink:#0B1A12; --accent-soft:#1E3A2B;
+  --hot:#E0714A; --cold:#5A8FC4;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:19px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:640px;margin:0 auto;padding:28px 20px 60px;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.08;margin:0;text-wrap:balance}
+h1{font-size:2.1rem}
+h2{font-size:1.4rem}
+h3{font-size:1.15rem}
+p{margin:0}
+a{color:var(--accent)}
+b{font-weight:700}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+.head{display:flex;align-items:center;gap:16px}
+.head svg{flex-shrink:0;width:56px;height:56px;border-radius:14px;box-shadow:var(--shadow)}
+.eyebrow{font-family:var(--display);font-size:.95rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink2);font-weight:700;margin-bottom:4px}
+.intro{color:var(--ink2);font-size:1.05rem}
+
+.cta{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-weight:700;font-size:1.2rem;letter-spacing:.02em;text-decoration:none;padding:16px 20px;border-radius:12px;box-shadow:var(--shadow);text-align:center}
+.cta:hover{filter:brightness(1.05)}
+.urlbox{font-family:var(--mono);font-size:.95rem;background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;word-break:break-all;color:var(--ink2)}
+
+.step{display:flex;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.badge{flex-shrink:0;width:40px;height:40px;border-radius:999px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:1.25rem}
+.step .body{display:flex;flex-direction:column;gap:12px;min-width:0}
+.step .body > p{color:var(--ink2)}
+
+.phones{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:520px){.phones{grid-template-columns:1fr}}
+.phone{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.phone .who{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:1.05rem}
+.phone .who svg{width:30px;height:30px;flex-shrink:0}
+.phone ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px;color:var(--ink)}
+.phone ol li::marker{color:var(--accent);font-weight:700}
+
+.tour{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.tour{grid-template-columns:1fr}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow)}
+.tile .icon{width:44px;height:44px;border-radius:10px;background:var(--accent-soft);display:grid;place-items:center}
+.tile .icon svg{width:24px;height:24px;color:var(--accent)}
+.tile h3{font-size:1.05rem}
+.tile p{color:var(--ink2);font-size:.95rem}
+.tile.hot .icon{background:color-mix(in srgb, var(--hot) 18%, var(--surface))}
+.tile.hot .icon svg{color:var(--hot)}
+.tile.cold .icon{background:color-mix(in srgb, var(--cold) 18%, var(--surface))}
+.tile.cold .icon svg{color:var(--cold)}
+
+.minilist{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px;color:var(--ink)}
+.minilist li::marker{color:var(--accent);font-weight:700}
+
+.tip{display:flex;gap:14px;background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 12px 12px 0;padding:16px 18px}
+.tip .icon{flex-shrink:0;width:32px;height:32px;color:var(--accent)}
+.tip .body{display:flex;flex-direction:column;gap:4px}
+.tip h3{font-size:1.05rem}
+.tip p{color:var(--ink);font-size:.95rem}
+
+.foot{display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;padding-top:8px}
+.foot .note{color:var(--ink3);font-size:.9rem}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <div class="head">
+    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="512" height="512" rx="96" fill="#167A4C"/>
+      <rect x="56" y="150" width="400" height="212" rx="22" fill="#fff"/>
+      <rect x="56" y="150" width="400" height="212" rx="22" fill="none" stroke="#0E5A37" stroke-width="10"/>
+      <text x="256" y="292" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" font-size="150" letter-spacing="4" fill="#167A4C">YEX</text>
+      <rect x="120" y="392" width="272" height="22" rx="11" fill="#fff" opacity=".9"/>
+      <rect x="150" y="426" width="212" height="14" rx="7" fill="#fff" opacity=".6"/>
+    </svg>
+    <div>
+      <div class="eyebrow">Guía para tu teléfono</div>
+      <h1>Guía de Yex Radar</h1>
+    </div>
+  </div>
+
+  <p class="intro">Esta app te ayuda a encontrar clientes y camiones. No necesita contraseña, no necesita cuenta, y no hay que buscarla en ninguna tienda de aplicaciones. Sigue estos pasos una sola vez y te queda lista para siempre.</p>
+
+  <a class="cta" href="./" >Abrir Yex Radar</a>
+
+  <!-- Paso 1 -->
+  <div class="step">
+    <div class="badge">1</div>
+    <div class="body">
+      <h2>Abre el enlace</h2>
+      <p>Toca el botón verde de arriba. Si alguien te lo mandó por WhatsApp o correo, también puedes tocar este enlace directamente. Solo necesitas tener internet la primera vez.</p>
+      <div class="urlbox">https://bonnusa.github.io/yex-freight-radar/</div>
+    </div>
+  </div>
+
+  <!-- Paso 2 -->
+  <div class="step">
+    <div class="badge">2</div>
+    <div class="body">
+      <h2>Guárdala en tu pantalla de inicio</h2>
+      <p>Así te queda un ícono verde que dice YEX, igual que tus otras apps. Solo se hace una vez.</p>
+      <div class="phones">
+        <div class="phone">
+          <div class="who">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg>
+            Si tienes iPhone
+          </div>
+          <ol>
+            <li>Toca el botón de <b>Compartir</b> (el cuadrito con una flecha hacia arriba) en la barra del navegador.</li>
+            <li>Busca la opción <b>"Agregar a inicio"</b> y tócala.</li>
+            <li>Toca <b>"Agregar"</b> arriba a la derecha.</li>
+          </ol>
+        </div>
+        <div class="phone">
+          <div class="who">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--accent)"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>
+            Si tienes Android
+          </div>
+          <ol>
+            <li>Toca los <b>tres puntitos</b> arriba a la derecha del navegador.</li>
+            <li>Busca <b>"Instalar app"</b> o <b>"Agregar a pantalla principal"</b>.</li>
+            <li>Toca <b>"Instalar"</b> o <b>"Agregar"</b>.</li>
+          </ol>
+        </div>
+      </div>
+      <p>Cuando termines, ve a tu pantalla de inicio: ahí vas a ver el ícono verde de YEX. Ábrela desde ahí de ahora en adelante, como cualquier otra app.</p>
+    </div>
+  </div>
+
+  <!-- Tour (sin numerar: no es una secuencia, es un mapa de la app) -->
+  <div class="step">
+    <div class="badge">3</div>
+    <div class="body">
+      <h2>Conoce las 6 partes de la app</h2>
+      <p>Arriba de la pantalla hay 6 botones. Esto hace cada uno:</p>
+      <div class="tour">
+        <div class="tile">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></div>
+          <h3>Inicio</h3>
+          <p>Un resumen rápido: a quién llamar hoy.</p>
+        </div>
+        <div class="tile">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg></div>
+          <h3>Mercados</h3>
+          <p><span style="color:var(--hot);font-weight:700">Rojo/naranja</span>: sobra carga, busca clientes. <span style="color:var(--cold);font-weight:700">Azul</span>: sobran camiones, busca transportistas.</p>
+        </div>
+        <div class="tile">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+          <h3>Clientes</h3>
+          <p>Para buscar empresas que necesitan camiones.</p>
+        </div>
+        <div class="tile">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="9" width="13" height="8" rx="1"/><path d="M14 11h4l4 3v3h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div>
+          <h3>Transportistas</h3>
+          <p>Para buscar camiones y revisar que sean seguros antes de darles trabajo.</p>
+        </div>
+        <div class="tile">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div>
+          <h3>Pipeline</h3>
+          <p>Tu libreta: a quién llamaste y cuándo volver a llamar.</p>
+        </div>
+        <div class="tile">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <h3>Guiones</h3>
+          <p>Qué decir cuando llamas por teléfono, en español y en inglés.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paso 4 -->
+  <div class="step">
+    <div class="badge">4</div>
+    <div class="body">
+      <h2>Guarda tu primer contacto</h2>
+      <ol class="minilist">
+        <li>Toca la pestaña <b>Clientes</b> o <b>Transportistas</b>.</li>
+        <li>Elige el estado donde está esa empresa o ese camión.</li>
+        <li>Toca el botón <b>"+ Añadir"</b> (o en Pipeline, <b>"+ Nuevo prospecto"</b>).</li>
+        <li>Escribe el nombre y el teléfono.</li>
+        <li>Toca <b>"Guardar"</b>. Ya quedó guardado en tu teléfono para siempre.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div class="tip">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.5a7.5 7.5 0 1 0-11.5 6.3V21h8v-2.2a7.5 7.5 0 0 0 3.5-6.3z"/><path d="M9.5 21h5"/></svg>
+    <div class="body">
+      <h3>No olvides hacer un respaldo</h3>
+      <p>Todo lo que guardas se queda solo en este teléfono, como en un cuaderno. Antes de cambiar de teléfono, entra a <b>Pipeline</b>, toca <b>"Respaldo"</b> y mándate una copia por WhatsApp o correo.</p>
+    </div>
+  </div>
+
+  <div class="tip">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+    <div class="body">
+      <h3>¿Prefieres inglés?</h3>
+      <p>Arriba a la derecha hay dos botones: <b>ES</b> y <b>EN</b>. Tócalos para cambiar el idioma de toda la app.</p>
+    </div>
+  </div>
+
+  <div class="tip">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+    <div class="body">
+      <h3>Si algo no carga bien</h3>
+      <p>Revisa que tengas Wi-Fi o datos. Después de guardarla en tu pantalla, funciona casi siempre aunque no tengas internet.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    <a class="cta" href="./">Abrir Yex Radar</a>
+    <p class="note">Hecha para Yex · Savannah, Georgia</p>
+  </div>
+
+</div>
+
+</body>
+</html>
