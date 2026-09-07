@@ -1,0 +1,1022 @@
+<meta charset="utf-8">
+<title>Yex Freight Radar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#EDF0ED; --surface:#FFFFFF; --surface2:#F5F7F5; --ink:#16201B; --ink2:#4E5A53; --ink3:#7C877F;
+  --line:#D3D9D4; --line2:#E4E8E4;
+  --accent:#167A4C; --accent-ink:#FFFFFF; --accent-soft:#DDEFE4;
+  --h5:#B8371B; --h4:#E0682B; --h3:#C7BA8E; --h2:#79A9D8; --h1:#2F6DB3;
+  --h5-ink:#fff; --h4-ink:#fff; --h3-ink:#2B2A22; --h2-ink:#10243A; --h1-ink:#fff;
+  --ok:#167A4C; --warn:#B7791F; --bad:#B8371B;
+  --shadow:0 1px 2px rgba(20,30,24,.06), 0 8px 24px rgba(20,30,24,.08);
+  --radius:6px;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111915; --surface:#1A2420; --surface2:#212D27; --ink:#EAF0EB; --ink2:#AAB7AE; --ink3:#7E8B83;
+    --line:#33423A; --line2:#28352E;
+    --accent:#3EC17E; --accent-ink:#0B1A12; --accent-soft:#1E3A2B;
+    --h5:#D24A29; --h4:#E67A3C; --h3:#8F8664; --h2:#5A8FC4; --h1:#3C7DC6;
+    --h3-ink:#F2EEDD; --h2-ink:#fff;
+    --ok:#3EC17E; --warn:#E0A23E; --bad:#E85A3A;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111915; --surface:#1A2420; --surface2:#212D27; --ink:#EAF0EB; --ink2:#AAB7AE; --ink3:#7E8B83;
+  --line:#33423A; --line2:#28352E;
+  --accent:#3EC17E; --accent-ink:#0B1A12; --accent-soft:#1E3A2B;
+  --h5:#D24A29; --h4:#E67A3C; --h3:#8F8664; --h2:#5A8FC4; --h1:#3C7DC6;
+  --h3-ink:#F2EEDD; --h2-ink:#fff;
+  --ok:#3EC17E; --warn:#E0A23E; --bad:#E85A3A;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+h1,h2,h3,h4{font-family:var(--display);font-weight:600;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.005em}
+h1{font-size:2rem}
+h2{font-size:1.75rem}
+h3{font-size:1.25rem}
+h4{font-size:1.05rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+p{margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--ink2)}
+.small{font-size:.9rem}
+.eyebrow{font-family:var(--display);font-size:.85rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink3);font-weight:600}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- shell ---------- */
+.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{max-width:1180px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:20px;min-height:58px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:1.35rem;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.brand .sign{display:inline-grid;place-items:center;width:34px;height:26px;background:var(--accent);color:var(--accent-ink);border-radius:3px;font-size:.8rem;letter-spacing:.05em}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+.seg.lang{flex-shrink:0}
+.seg.lang button{padding:5px 9px;font-family:var(--display);font-size:.95rem;letter-spacing:.06em}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:16px 12px 13px;font-family:var(--display);font-size:1.05rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs button:hover{color:var(--ink)}
+main{max-width:1180px;margin:0 auto;padding:28px 20px 80px}
+section.view{display:flex;flex-direction:column;gap:24px}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+.head p{max-width:62ch;color:var(--ink2)}
+
+/* ---------- primitives ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.panel > .ph{padding:14px 18px;border-bottom:1px solid var(--line2);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel > .pb{padding:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:860px){.grid2,.grid3{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:4px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:600;text-decoration:none;color:var(--ink);line-height:1.2}
+.btn:hover{border-color:var(--ink3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.sm{padding:5px 10px;font-size:.9rem}
+.btn.danger{color:var(--bad)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);font-family:var(--display);font-weight:600}
+.field input,.field select,.field textarea{padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--surface);min-width:0;width:100%}
+.field textarea{min-height:80px;resize:vertical}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+.row .field{flex:1 1 160px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface2);border-radius:999px;padding:4px 12px;font-size:.9rem;cursor:pointer;color:var(--ink2)}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.linklist{display:flex;flex-direction:column;gap:0;margin:0;padding:0;list-style:none}
+.linklist li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line2)}
+.linklist li:first-child{border-top:0}
+.linklist .t{display:flex;flex-direction:column;gap:1px}
+.linklist .t b{font-weight:600}
+.linklist .t span{font-size:.88rem;color:var(--ink2)}
+.linklist a.btn{white-space:nowrap}
+.heat{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:.85rem;padding:3px 9px;border-radius:3px}
+.heat.h5{background:var(--h5);color:var(--h5-ink)}
+.heat.h4{background:var(--h4);color:var(--h4-ink)}
+.heat.h3{background:var(--h3);color:var(--h3-ink)}
+.heat.h2{background:var(--h2);color:var(--h2-ink)}
+.heat.h1{background:var(--h1);color:var(--h1-ink)}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th{text-align:left;font-family:var(--display);text-transform:uppercase;letter-spacing:.06em;font-size:.82rem;color:var(--ink2);padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line2);vertical-align:top}
+.tw{overflow-x:auto}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.kpi .n{font-family:var(--display);font-size:2rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:.85rem;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;font-family:var(--display);font-weight:600}
+details{border-top:1px solid var(--line2)}
+details:first-of-type{border-top:0}
+summary{cursor:pointer;padding:12px 0;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--display);font-size:1.3rem;color:var(--ink3)}
+details[open] summary::after{content:"–"}
+details .db{padding:0 0 16px;color:var(--ink);max-width:70ch}
+details .db p{margin:0 0 8px}
+details .db ul,details .db ol{margin:0 0 8px;padding-left:20px}
+.callout{border-left:4px solid var(--accent);background:var(--accent-soft);padding:12px 16px;border-radius:0 var(--radius) var(--radius) 0}
+.note{font-size:.88rem;color:var(--ink2)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:4px;font-weight:600;box-shadow:var(--shadow);z-index:50;transition:opacity .2s}
+
+/* ---------- tile map ---------- */
+.map{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;max-width:720px}
+.tile{aspect-ratio:1;border:0;border-radius:3px;font-family:var(--display);font-weight:700;font-size:clamp(.7rem,1.6vw,1rem);cursor:pointer;display:grid;place-items:center;padding:0;line-height:1;transition:transform .08s}
+.tile:hover{transform:scale(1.08);z-index:2;box-shadow:var(--shadow)}
+.tile[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:-3px}
+.tile.h5{background:var(--h5);color:var(--h5-ink)}
+.tile.h4{background:var(--h4);color:var(--h4-ink)}
+.tile.h3{background:var(--h3);color:var(--h3-ink)}
+.tile.h2{background:var(--h2);color:var(--h2-ink)}
+.tile.h1{background:var(--h1);color:var(--h1-ink)}
+.tile.dim{opacity:.28}
+.tile.dim:hover{opacity:.9}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem;color:var(--ink2);align-items:center}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:5px}
+.maplay{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.maplay{grid-template-columns:1fr}}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:7px 12px;cursor:pointer;font-weight:600;color:var(--ink2);border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.rank li{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line2)}
+.rank li:first-child{border-top:0}
+.rank .code{font-family:var(--mono);font-size:.85rem;width:2.2em;color:var(--ink2)}
+.rank .bar{flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.rank .bar i{display:block;height:100%}
+
+/* ---------- pipeline ---------- */
+.stages{display:flex;flex-wrap:wrap;gap:8px}
+.stage{border:1px solid var(--line);border-radius:4px;padding:6px 12px;display:flex;gap:8px;align-items:baseline;background:var(--surface);cursor:pointer}
+.stage[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.stage b{font-family:var(--display);font-size:1.3rem;font-variant-numeric:tabular-nums}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;display:flex;flex-direction:column;gap:8px;border-top:4px solid var(--line)}
+.card.cliente{border-top-color:var(--h4)}
+.card.transportista{border-top-color:var(--h1)}
+.card .ct{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card .name{font-weight:600;font-size:1.05rem;line-height:1.25}
+.card .meta{font-size:.9rem;color:var(--ink2);display:flex;flex-wrap:wrap;gap:4px 12px}
+.card .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.tag{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;font-family:var(--display);font-weight:600;padding:2px 8px;border-radius:3px;background:var(--surface2);border:1px solid var(--line);white-space:nowrap}
+.tag.due{background:var(--warn);color:#fff;border-color:transparent}
+.tag.late{background:var(--bad);color:#fff;border-color:transparent}
+dialog{border:1px solid var(--line);border-radius:var(--radius);padding:0;background:var(--surface);color:var(--ink);width:min(680px,94vw);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(10,16,12,.5)}
+dialog form{display:flex;flex-direction:column;gap:14px;padding:20px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.fgrid{grid-template-columns:1fr}}
+.fgrid .span{grid-column:1/-1}
+.empty{padding:32px;text-align:center;color:var(--ink2);border:1px dashed var(--line);border-radius:var(--radius)}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><span class="sign">I-16</span> Yex Freight Radar</div>
+    <nav class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-v="inicio" aria-selected="true">Inicio</button>
+      <button role="tab" data-v="mercados">Mercados</button>
+      <button role="tab" data-v="clientes">Clientes</button>
+      <button role="tab" data-v="transportistas">Transportistas</button>
+      <button role="tab" data-v="pipeline">Pipeline</button>
+      <button role="tab" data-v="guiones">Guiones</button>
+    </nav>
+    <div class="seg lang" id="lang" aria-label="Idioma / Language"><button data-l="es" aria-pressed="true">ES</button><button data-l="en" aria-pressed="false">EN</button></div>
+  </div>
+</header>
+
+<main>
+
+<!-- ================= INICIO ================= -->
+<section class="view" id="v-inicio">
+  <div class="head">
+    <div>
+      <div class="eyebrow">Savannah, Georgia · Costa Este · Dry van, flatbed y hot shot</div>
+      <h1>Buscar carga y buscar camiones en la Costa Este</h1>
+    </div>
+    <p>Desde Savannah, la I-95 y la I-16/I-75 conectan con todo el corredor de la Costa Este, de Miami a Nueva Inglaterra. Georgia es uno de los mercados de carga saliente más calientes del país. Esta herramienta organiza dónde buscar clientes, dónde buscar transportistas y qué hacer con cada contacto. No cubre contenedores: los centros de distribución del puerto interesan porque embarcan en dry van hacia el interior.</p>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="ph"><h3>Seguimientos de hoy</h3><button class="btn sm" data-go="pipeline">Ver pipeline</button></div>
+      <div class="pb" id="today"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><h3>Regla de oro del broker</h3></div>
+      <div class="pb" style="display:flex;flex-direction:column;gap:12px">
+        <div class="callout"><b>Mercado caliente</b> = sobran cargas, faltan camiones. Ahí se buscan <b>clientes</b>: pagan mejor y necesitan capacidad. Los transportistas que salen de ahí cobran caro.</div>
+        <div class="callout" style="border-left-color:var(--h1);background:transparent;border:1px solid var(--line);border-left:4px solid var(--h1)"><b>Mercado frío</b> = sobran camiones vacíos que quieren salir. Ahí se buscan <b>transportistas</b>: aceptan tarifas bajas para no regresar vacíos. Ese camión barato es el que se usa para cubrir la carga del mercado caliente.</div>
+        <p class="note">El negocio está en cruzar los dos: carga de un mercado caliente con un camión que necesita salir de un mercado frío. La pestaña Mercados muestra ambos por temporada.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="ph"><h3>Carriles principales desde Savannah</h3><span class="note">millas aprox.</span></div>
+      <div class="pb tw">
+        <table>
+          <thead><tr><th>Destino</th><th>Ruta</th><th style="text-align:right">Millas</th><th>Tipo de carga habitual</th></tr></thead>
+          <tbody id="lanes"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph"><h3>Generadores de carga en la zona de Savannah</h3><span class="note">empresas públicas, verificar contactos</span></div>
+      <div class="pb">
+        <ul class="linklist" id="localco"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MERCADOS ================= -->
+<section class="view" id="v-mercados" hidden>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Áreas calientes y frías</div>
+      <h1>Mapa de mercados de carga</h1>
+    </div>
+    <p>Calor = demanda de camiones para carga saliente (ratio carga/camión). Es una referencia por patrones estacionales típicos; antes de cotizar confirma el día a día en DAT Trendlines o el load board. La Costa Este va en color; el resto del país queda atenuado como referencia.</p>
+  </div>
+
+  <div class="row" style="align-items:center;gap:20px">
+    <div>
+      <div class="eyebrow" style="margin-bottom:6px">Temporada</div>
+      <div class="seg" id="seasons"></div>
+    </div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:6px">Alcance</div>
+      <div class="seg" id="scope"><button aria-pressed="true" data-sc="east">Costa Este</button><button aria-pressed="false" data-sc="all">Todo EE. UU.</button></div>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="maplay">
+    <div>
+      <div class="map" id="map" role="group" aria-label="Mapa de estados"></div>
+      <p class="note" style="margin-top:10px">Toca un estado para ver industrias, hubs, asociación de transportistas y búsquedas listas.</p>
+    </div>
+    <div class="panel" id="stateDetail"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="ph"><h3>Más calientes esta temporada</h3><span class="note">busca clientes</span></div>
+      <div class="pb"><ol class="rank" id="rankHot"></ol></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><h3>Más fríos esta temporada</h3><span class="note">busca transportistas</span></div>
+      <div class="pb"><ol class="rank" id="rankCold"></ol></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="ph"><h3>Calendario de carga en EE. UU.</h3></div>
+    <div class="pb tw">
+      <table>
+        <thead><tr><th>Meses</th><th>Qué pasa</th><th>Dónde se calienta</th></tr></thead>
+        <tbody>
+          <tr><td>Ene – Feb</td><td>Lo más lento del año. Sobran camiones en casi todo el país. Buen momento para reclutar transportistas y negociar tarifas.</td><td>Florida y Arizona (frutas y verduras de invierno)</td></tr>
+          <tr><td>Mar – Jul</td><td>Temporada de productos frescos: los reefers se van al campo y quedan menos dry vans. Arranca la construcción: flatbed y hot shot escasos.</td><td>Florida, Georgia, Carolinas; construcción en todo el Sureste y el corredor I-95</td></tr>
+          <tr><td>Jun – Ago</td><td>Semana del 4 de julio y fin de curso escolar tensan el mercado. Construcción a tope.</td><td>Sureste, Texas, Medio Oeste</td></tr>
+          <tr><td>Sep – Nov</td><td>Cosecha en el Medio Oeste y pico de retail para Navidad: los DCs de la Costa Este, incluidos los del puerto de Savannah, embarcan en dry van sin parar.</td><td>Iowa, Nebraska, Minnesota, Dakotas, Kansas; DCs de Georgia, Pensilvania, Ohio, California</td></tr>
+          <tr><td>Dic</td><td>Última milla y cierre de año. Muchos transportistas paran en Navidad; los que trabajan cobran prima.</td><td>Todo el país, corto plazo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CLIENTES ================= -->
+<section class="view" id="v-clientes" hidden>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Shippers</div>
+      <h1>Buscar clientes que mueven carga</h1>
+    </div>
+    <p>Un cliente es cualquier empresa que embarca con regularidad: fábricas, centros de distribución, distribuidores de materiales, concesionarios de maquinaria, constructoras. Dry van para producto terminado, flatbed para material y maquinaria, hot shot para cargas parciales urgentes. Elige estado e industria y la app arma las búsquedas.</p>
+  </div>
+
+  <div class="panel">
+    <div class="pb" style="display:flex;flex-direction:column;gap:14px">
+      <div class="row">
+        <div class="field" style="flex:1 1 200px"><label for="cState">Estado</label><select id="cState"></select></div>
+        <div class="field" style="flex:1 1 200px"><label for="cCity">Ciudad o zona (opcional)</label><input id="cCity" placeholder="ej. Pooler, Dalton, Atlanta"></div>
+        <div class="field" style="flex:1 1 200px"><label for="cEquip">Equipo que quieres mover</label><select id="cEquip"><option value="">Cualquiera</option><option>Dry van</option><option>Flatbed</option><option>Hot shot</option></select></div>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:6px">Industrias (toca para elegir)</div>
+        <div class="chips" id="cInd"></div>
+      </div>
+      <div id="cStateInfo" class="note"></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="ph"><h3>Búsquedas listas</h3><span class="note">se abren en pestaña nueva</span></div>
+      <div class="pb"><ul class="linklist" id="cLinks"></ul></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div class="panel">
+        <div class="ph"><h3>Directorios y bases de datos</h3></div>
+        <div class="pb"><ul class="linklist" id="cDirs"></ul></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><h3>A quién llamar dentro de la empresa</h3></div>
+        <div class="pb">
+          <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px">
+            <li><b>Logistics / Transportation Manager</b>: decide qué broker usa. El objetivo principal.</li>
+            <li><b>Shipping Supervisor / Traffic Coordinator</b>: tiende las cargas día a día. Sabe cuándo les falta un camión.</li>
+            <li><b>Purchasing / Procurement</b>: firma tarifas anuales (RFP). Camino largo pero grande.</li>
+            <li><b>Plant Manager</b> en fábricas pequeñas: suele decidir todo él mismo.</li>
+            <li><b>Project Manager / Superintendent</b> en constructoras: pide flatbed y hot shot con urgencia y decide en el momento.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRANSPORTISTAS ================= -->
+<section class="view" id="v-transportistas" hidden>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Carriers</div>
+      <h1>Buscar transportistas y verificarlos</h1>
+    </div>
+    <p>Tus proveedores son owner-operators, flotas pequeñas y compañías de camiones con autoridad activa. Búscalos donde hay camiones vacíos y verifica siempre MC, seguro y calificación de seguridad antes de darles una carga.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="ph"><h3>Verificar un transportista (FMCSA)</h3></div>
+      <div class="pb" style="display:flex;flex-direction:column;gap:12px">
+        <div class="row">
+          <div class="field" style="flex:1 1 140px"><label for="vType">Buscar por</label><select id="vType"><option value="MC_MX">Número MC</option><option value="USDOT">Número USDOT</option><option value="NAME">Nombre</option></select></div>
+          <div class="field" style="flex:2 1 200px"><label for="vQ">Valor</label><input id="vQ" class="mono" placeholder="ej. 123456"></div>
+          <a class="btn primary" id="vGo" target="_blank" rel="noopener">Abrir en SAFER</a>
+        </div>
+        <ul class="linklist" id="vLinks"></ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph"><h3>Lista de verificación antes de asignar carga</h3></div>
+      <div class="pb">
+        <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px">
+          <li><b>Autoridad activa</b> (Operating Authority: ACTIVE) y con más de 6 meses. Menos de 6 meses solo con referencias.</li>
+          <li><b>Seguro</b>: responsabilidad civil de $1,000,000 y carga (cargo) de $100,000 mínimo. Pide certificado (COI) con tu nombre como certificate holder.</li>
+          <li><b>Safety rating</b>: no aceptar "Unsatisfactory". Revisa alertas BASIC en SMS.</li>
+          <li><b>Teléfono y correo</b> coinciden con lo registrado en FMCSA. Si no, sospecha de robo de identidad de carrier.</li>
+          <li><b>Sin doble brokerage</b>: el carrier no puede pasar tu carga a otro. Ponlo por escrito en el acuerdo carrier-broker.</li>
+          <li><b>W-9 y acuerdo firmado</b> antes del primer viaje. Pago típico a 30 días o quick pay con descuento de 2–3 %.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="pb" style="display:flex;flex-direction:column;gap:14px">
+      <div class="row">
+        <div class="field" style="flex:1 1 200px"><label for="tState">Estado</label><select id="tState"></select></div>
+        <div class="field" style="flex:1 1 200px"><label for="tCity">Ciudad (opcional)</label><input id="tCity" placeholder="ej. Statesboro, Jacksonville"></div>
+        <div class="field" style="flex:1 1 200px"><label for="tEquip">Equipo</label><select id="tEquip"><option value="">Cualquiera</option><option>Dry van</option><option>Flatbed</option><option>Hot shot</option></select></div>
+      </div>
+      <div id="tStateInfo" class="note"></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="ph"><h3>Búsquedas listas</h3><span class="note">se abren en pestaña nueva</span></div>
+      <div class="pb"><ul class="linklist" id="tLinks"></ul></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div class="panel">
+        <div class="ph"><h3>Load boards y asociaciones nacionales</h3></div>
+        <div class="pb"><ul class="linklist" id="tNat"></ul></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><h3>Dónde aparecen los camiones vacíos</h3></div>
+        <div class="pb">
+          <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px">
+            <li><b>Load boards</b> (DAT, Truckstop): publica tu carga y filtra "trucks available" en el origen. El carrier que llama para tu carga es un contacto nuevo: guárdalo.</li>
+            <li><b>Truck stops</b> del I-95 e I-16 alrededor de Savannah: Pilot, Love's, TA. Muchos owner-operators hispanos.</li>
+            <li><b>Flatbed</b>: aserraderos, acerías y concesionarios de maquinaria conocen a los flatbed que los cargan; pregúntales por sus carriers.</li>
+            <li><b>Grupos de Facebook</b>: "Camioneros hispanos en USA", "Owner operators Georgia", "Dispatch en español".</li>
+            <li><b>Asociaciones estatales</b> (ver enlace por estado) y OOIDA: listas de miembros y eventos.</li>
+            <li><b>Hot shot</b>: grupos de Facebook "Hot Shot Trucking" y "Hotshot en español", concesionarios de remolques gooseneck. Muchos operan sin CDL por debajo de 26,001 lb de peso combinado; pide igual MC, seguro y placa.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PIPELINE ================= -->
+<section class="view" id="v-pipeline" hidden>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Prospectos</div>
+      <h1>Pipeline de clientes y transportistas</h1>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" id="btnBackup">Respaldo</button>
+      <button class="btn primary" id="btnAdd">+ Nuevo prospecto</button>
+    </div>
+  </div>
+
+  <div class="stages" id="stages"></div>
+
+  <div class="row">
+    <div class="field" style="flex:0 1 200px"><label for="pType">Tipo</label><select id="pType"><option value="">Todos</option><option value="cliente">Clientes</option><option value="transportista">Transportistas</option></select></div>
+    <div class="field" style="flex:1 1 200px"><label for="pQ">Buscar</label><input id="pQ" placeholder="nombre, ciudad, contacto, MC…"></div>
+    <div class="field" style="flex:0 1 200px"><label for="pSort">Orden</label><select id="pSort"><option value="follow">Próximo seguimiento</option><option value="updated">Última actualización</option><option value="name">Nombre</option></select></div>
+  </div>
+
+  <div class="cards" id="cards"></div>
+
+  <div class="panel" id="backupPanel" hidden>
+    <div class="ph"><h3>Respaldo del pipeline</h3><button class="btn sm" id="btnBackupClose">Cerrar</button></div>
+    <div class="pb" style="display:flex;flex-direction:column;gap:12px">
+      <p class="note">Los prospectos se guardan solo en este navegador. Para pasarlos a otro dispositivo o guardar una copia: copia el texto de abajo y pégalo en el otro dispositivo, luego "Importar".</p>
+      <textarea id="backupText" class="mono" style="min-height:140px;font-size:.8rem"></textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="btnCopy">Copiar respaldo</button>
+        <button class="btn" id="btnImport">Importar (reemplaza lo actual)</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GUIONES ================= -->
+<section class="view" id="v-guiones" hidden>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Qué decir</div>
+      <h1>Guiones de llamada y preguntas clave</h1>
+    </div>
+    <p>En inglés para la mayoría de los shippers y en español para transportistas hispanos. Corto, directo, y siempre termina con una pregunta que abra el siguiente paso.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="ph"><h3>Clientes (shippers)</h3></div>
+      <div class="pb">
+        <details open>
+          <summary>Llamada en frío (EN)</summary>
+          <div class="db">
+            <p>"Hi, this is Yex with [Company], a freight brokerage based in Savannah. I work with manufacturers in [industry] moving [dry van / flatbed / hot shot] loads up and down the East Coast. Who handles your outbound truckload shipping?"</p>
+            <p>Si pasan con la persona: "I won't take much of your time. Two quick questions: what lanes do you ship most, and where do you usually get stuck finding trucks? I have carriers coming empty into [region] every week and I'd like to quote one of those lanes for you."</p>
+            <p>Cierre: "Can I send you a rate on your [origin → destination] lane this week, and would you give me a shot at the next load you can't cover?"</p>
+          </div>
+        </details>
+        <details>
+          <summary>Correo de seguimiento (EN)</summary>
+          <div class="db">
+            <p>Subject: Trucks available out of [City] this week</p>
+            <p>"Hi [Name], thanks for the time today. As discussed: [lane] at $[X] all-in, [equipment], 24-hour tender. We're based in Savannah, MC [número], $[cargo] cargo coverage, and I personally track every load. If a truck falls through this week, call my cell: [teléfono]."</p>
+          </div>
+        </details>
+        <details>
+          <summary>Pitch de hot shot (EN)</summary>
+          <div class="db">
+            <p>"When you have a partial or a rush load, say a pallet of parts or a small machine that can't wait for a full truck, I run hot shot units out of Savannah: pickup and gooseneck, same-day dispatch, up to about 15,000 lb and 40 feet. Cheaper than an expedited straight truck and faster than waiting for a flatbed. Who do I talk to when something has to move today?"</p>
+          </div>
+        </details>
+        <details>
+          <summary>Preguntas para calificar a un cliente</summary>
+          <div class="db">
+            <ol>
+              <li>¿Cuántas cargas completas (truckload) mueven por semana? ¿LTL también?</li>
+              <li>¿Qué carriles (origen → destino) son los más frecuentes?</li>
+              <li>¿Equipo: dry van, flatbed o hot shot (parcial urgente)? ¿Peso, dimensiones y tipo de producto?</li>
+              <li>¿Con cuántas horas de anticipación tienden la carga?</li>
+              <li>¿Trabajan ya con brokers o solo con carriers directos? ¿Qué les falla?</li>
+              <li>¿Términos de pago (net 30, 45, 60)? ¿Hay proceso de alta de proveedor?</li>
+              <li>¿Hacen licitación anual (RFP)? ¿Cuándo?</li>
+            </ol>
+          </div>
+        </details>
+        <details>
+          <summary>Objeciones frecuentes</summary>
+          <div class="db">
+            <p><b>"Ya tenemos brokers."</b> "Perfecto, la mayoría tiene tres o cuatro. Solo pido ser la llamada de respaldo cuando uno falle. Una carga y usted decide."</p>
+            <p><b>"Envíeme sus tarifas."</b> "Con gusto. ¿En qué carril le cotizo hoy? Una tarifa sin carril no le sirve de nada."</p>
+            <p><b>"Es muy caro."</b> "¿Contra qué lo compara? Si me dice el número al que necesita llegar, le digo si puedo o no en cinco minutos."</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><h3>Transportistas (carriers)</h3></div>
+      <div class="pb">
+        <details open>
+          <summary>Llamada de reclutamiento (ES)</summary>
+          <div class="db">
+            <p>"Buenas, habla Yex de [Compañía], somos broker en Savannah, Georgia. Vi que tienen camiones [dry van] trabajando en [zona]. ¿Con quién hablo sobre cargas?"</p>
+            <p>"Tengo cargas saliendo de Savannah y Atlanta hacia Florida, las Carolinas, Virginia y el Noreste toda la semana. ¿Qué zonas les gusta correr y qué tarifa por milla necesitan para que les cuadre?"</p>
+            <p>Cierre: "Le mando el paquete de alta (carrier packet) ahora mismo: acuerdo, W-9 y certificado de seguro. En cuanto lo firme, le paso la primera carga. ¿A qué correo?"</p>
+          </div>
+        </details>
+        <details>
+          <summary>Llamada de reclutamiento (EN)</summary>
+          <div class="db">
+            <p>"Hi, this is Yex with [Company], a broker out of Savannah. I've got steady freight out of the Port of Savannah and Atlanta. What lanes do you like to run and what are you looking for on rate per mile? If it fits, I'll send the carrier packet today and get you loaded this week."</p>
+          </div>
+        </details>
+        <details>
+          <summary>Preguntas para calificar a un transportista</summary>
+          <div class="db">
+            <ol>
+              <li>Número MC y USDOT. ¿Desde cuándo tienen autoridad?</li>
+              <li>¿Cuántos camiones y de qué equipo? ¿Propios o con owner-operators?</li>
+              <li>¿Zonas donde suelen quedar vacíos (dónde necesitan carga de regreso)?</li>
+              <li>¿Seguro: monto de responsabilidad y de carga? ¿Quién es la aseguradora?</li>
+              <li>¿Tienen ELD y rastreo? ¿Aceptan macropoint / tracking por app?</li>
+              <li>¿Forma de pago preferida: net 30, quick pay, factoring? ¿Con qué factoring?</li>
+              <li>Hot shot: ¿largo del remolque (30–40 ft), peso máximo que cargan, CDL o no, ramplas y cadenas para maquinaria?</li>
+            </ol>
+          </div>
+        </details>
+        <details>
+          <summary>Señales de alerta</summary>
+          <div class="db">
+            <ul>
+              <li>Autoridad de menos de 3 meses y flota "grande" de la nada.</li>
+              <li>Teléfono o correo distinto al registrado en FMCSA.</li>
+              <li>Presión para pagar por adelantado o cambiar datos de pago por correo.</li>
+              <li>No quieren firmar el acuerdo anti doble brokerage.</li>
+              <li>El chofer que llega no coincide con el nombre del carrier asignado.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="ph"><h3>Rutina semanal sugerida</h3></div>
+    <div class="pb tw">
+      <table>
+        <thead><tr><th>Día</th><th>Mañana</th><th>Tarde</th></tr></thead>
+        <tbody>
+          <tr><td>Lunes</td><td>Revisar mercados de la semana (DAT Trendlines). Elegir 2 estados calientes y 2 fríos.</td><td>20 llamadas a shippers en los estados calientes.</td></tr>
+          <tr><td>Martes</td><td>Seguimientos vencidos del pipeline.</td><td>Reclutar 10 carriers en los estados fríos (load board + llamadas).</td></tr>
+          <tr><td>Miércoles</td><td>Cotizaciones pendientes y correos de seguimiento.</td><td>20 llamadas a shippers nuevos (zona Savannah / Atlanta).</td></tr>
+          <tr><td>Jueves</td><td>Verificar carriers nuevos en FMCSA y completar carrier packets.</td><td>Llamadas a constructoras, distribuidores de materiales y concesionarios de maquinaria (flatbed / hot shot).</td></tr>
+          <tr><td>Viernes</td><td>Confirmar cargas de la próxima semana con clientes activos.</td><td>Limpiar pipeline, marcar descartados, planear la semana.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<dialog id="dlg">
+  <form method="dialog" id="pForm">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="dlgTitle">Nuevo prospecto</h2><button type="button" class="btn sm" id="dlgClose">Cerrar</button></div>
+    <input type="hidden" name="id">
+    <div class="fgrid">
+      <div class="field"><label>Tipo</label><select name="type" required><option value="cliente">Cliente (shipper)</option><option value="transportista">Transportista (carrier)</option></select></div>
+      <div class="field"><label>Etapa</label><select name="stage" id="fStage"></select></div>
+      <div class="field span"><label>Empresa</label><input name="name" required placeholder="Nombre de la empresa"></div>
+      <div class="field"><label>Ciudad</label><input name="city"></div>
+      <div class="field"><label>Estado</label><select name="state" id="fState"></select></div>
+      <div class="field"><label>Contacto</label><input name="contact" placeholder="Nombre y cargo"></div>
+      <div class="field"><label>Teléfono</label><input name="phone" type="tel"></div>
+      <div class="field"><label>Correo</label><input name="email" type="email"></div>
+      <div class="field"><label>Equipo</label><input name="equip" placeholder="Dry van, flatbed, hot shot…"></div>
+      <div class="field"><label>MC / USDOT (transportistas)</label><input name="mc" class="mono" placeholder="MC 123456 · DOT 1234567"></div>
+      <div class="field"><label>Carril o zona</label><input name="lane" placeholder="Savannah → Atlanta"></div>
+      <div class="field"><label>Próximo seguimiento</label><input name="follow" type="date"></div>
+      <div class="field span"><label>Notas</label><textarea name="notes" placeholder="Qué dijeron, tarifa pedida, volumen, quién decide…"></textarea></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <button type="button" class="btn danger" id="dlgDelete" hidden>Eliminar</button>
+      <div style="display:flex;gap:8px;margin-left:auto"><button type="submit" class="btn primary">Guardar</button></div>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* ===================== IDIOMA / LANGUAGE ===================== */
+const EN = {"Inicio": "Home", "Mercados": "Markets", "Clientes": "Shippers", "Transportistas": "Carriers", "Guiones": "Scripts", "Savannah, Georgia · Costa Este · Dry van, flatbed y hot shot": "Savannah, Georgia · East Coast · Dry van, flatbed and hot shot", "Buscar carga y buscar camiones en la Costa Este": "Find freight and find trucks on the East Coast", "Desde Savannah, la I-95 y la I-16/I-75 conectan con todo el corredor de la Costa Este, de Miami a Nueva Inglaterra. Georgia es uno de los mercados de carga saliente más calientes del país. Esta herramienta organiza dónde buscar clientes, dónde buscar transportistas y qué hacer con cada contacto. No cubre contenedores: los centros de distribución del puerto interesan porque embarcan en dry van hacia el interior.": "From Savannah, I-95 and I-16/I-75 connect to the whole East Coast corridor, from Miami to New England. Georgia is one of the hottest outbound freight markets in the country. This tool organizes where to look for shippers, where to look for carriers, and what to do with each contact. It does not cover containers: the port's distribution centers matter because they ship inland in dry vans.", "Seguimientos de hoy": "Today's follow-ups", "Ver pipeline": "View pipeline", "Regla de oro del broker": "The broker's golden rule", "Mercado caliente": "Hot market", "= sobran cargas, faltan camiones. Ahí se buscan": "= more loads than trucks. That's where you look for", "clientes": "shippers", ": pagan mejor y necesitan capacidad. Los transportistas que salen de ahí cobran caro.": ": they pay better and need capacity. Carriers leaving from there charge a premium.", "Mercado frío": "Cold market", "= sobran camiones vacíos que quieren salir. Ahí se buscan": "= too many empty trucks trying to get out. That's where you look for", "transportistas": "carriers", ": aceptan tarifas bajas para no regresar vacíos. Ese camión barato es el que se usa para cubrir la carga del mercado caliente.": ": they take low rates rather than deadhead home. That cheap truck is the one you use to cover the hot market's load.", "El negocio está en cruzar los dos: carga de un mercado caliente con un camión que necesita salir de un mercado frío. La pestaña Mercados muestra ambos por temporada.": "The business is in crossing the two: a load from a hot market with a truck that needs to leave a cold one. The Markets tab shows both by season.", "Carriles principales desde Savannah": "Main lanes out of Savannah", "millas aprox.": "approx. miles", "Destino": "Destination", "Ruta": "Route", "Millas": "Miles", "Tipo de carga habitual": "Typical freight", "Generadores de carga en la zona de Savannah": "Freight generators around Savannah", "empresas públicas, verificar contactos": "public companies, verify contacts", "Áreas calientes y frías": "Hot and cold areas", "Mapa de mercados de carga": "Freight market map", "Calor = demanda de camiones para carga saliente (ratio carga/camión). Es una referencia por patrones estacionales típicos; antes de cotizar confirma el día a día en DAT Trendlines o el load board. La Costa Este va en color; el resto del país queda atenuado como referencia.": "Heat = demand for trucks on outbound freight (load-to-truck ratio). It is a reference based on typical seasonal patterns; before quoting, confirm the day-to-day on DAT Trendlines or the load board. The East Coast is in color; the rest of the country is dimmed for reference.", "Temporada": "Season", "Alcance": "Scope", "Costa Este": "East Coast", "Todo EE. UU.": "All U.S.", "Toca un estado para ver industrias, hubs, asociación de transportistas y búsquedas listas.": "Tap a state to see industries, hubs, trucking association and ready-made searches.", "Más calientes esta temporada": "Hottest this season", "busca clientes": "look for shippers", "Más fríos esta temporada": "Coldest this season", "busca transportistas": "look for carriers", "Calendario de carga en EE. UU.": "U.S. freight calendar", "Meses": "Months", "Qué pasa": "What happens", "Dónde se calienta": "Where it heats up", "Ene – Feb": "Jan – Feb", "Lo más lento del año. Sobran camiones en casi todo el país. Buen momento para reclutar transportistas y negociar tarifas.": "Slowest time of the year. Trucks are plentiful almost everywhere. Good time to recruit carriers and negotiate rates.", "Florida y Arizona (frutas y verduras de invierno)": "Florida and Arizona (winter produce)", "Mar – Jul": "Mar – Jul", "Temporada de productos frescos: los reefers se van al campo y quedan menos dry vans. Arranca la construcción: flatbed y hot shot escasos.": "Produce season: reefers go to the fields and fewer dry vans remain. Construction starts: flatbed and hot shot get scarce.", "Florida, Georgia, Carolinas; construcción en todo el Sureste y el corredor I-95": "Florida, Georgia, the Carolinas; construction across the Southeast and the I-95 corridor", "Jun – Ago": "Jun – Aug", "Semana del 4 de julio y fin de curso escolar tensan el mercado. Construcción a tope.": "The July 4th week and end of the school year tighten the market. Construction at full speed.", "Sureste, Texas, Medio Oeste": "Southeast, Texas, Midwest", "Sep – Nov": "Sep – Nov", "Cosecha en el Medio Oeste y pico de retail para Navidad: los DCs de la Costa Este, incluidos los del puerto de Savannah, embarcan en dry van sin parar.": "Midwest harvest and the Christmas retail peak: East Coast DCs, including those around the Port of Savannah, ship dry vans nonstop.", "Iowa, Nebraska, Minnesota, Dakotas, Kansas; DCs de Georgia, Pensilvania, Ohio, California": "Iowa, Nebraska, Minnesota, the Dakotas, Kansas; DCs in Georgia, Pennsylvania, Ohio, California", "Dic": "Dec", "Última milla y cierre de año. Muchos transportistas paran en Navidad; los que trabajan cobran prima.": "Last mile and year-end. Many carriers stop for Christmas; those who work charge a premium.", "Todo el país, corto plazo": "Whole country, short term", "Buscar clientes que mueven carga": "Find shippers that move freight", "Un cliente es cualquier empresa que embarca con regularidad: fábricas, centros de distribución, distribuidores de materiales, concesionarios de maquinaria, constructoras. Dry van para producto terminado, flatbed para material y maquinaria, hot shot para cargas parciales urgentes. Elige estado e industria y la app arma las búsquedas.": "A shipper is any company that ships regularly: factories, distribution centers, building-material distributors, equipment dealers, contractors. Dry van for finished goods, flatbed for materials and machinery, hot shot for urgent partial loads. Pick a state and industries and the app builds the searches.", "Estado": "State", "Ciudad o zona (opcional)": "City or area (optional)", "Equipo que quieres mover": "Equipment you want to move", "Cualquiera": "Any", "Industrias (toca para elegir)": "Industries (tap to select)", "Búsquedas listas": "Ready-made searches", "se abren en pestaña nueva": "open in a new tab", "Directorios y bases de datos": "Directories and databases", "A quién llamar dentro de la empresa": "Who to call inside the company", ": decide qué broker usa. El objetivo principal.": ": decides which broker they use. The main target.", ": tiende las cargas día a día. Sabe cuándo les falta un camión.": ": tenders loads day to day. Knows when they're short a truck.", ": firma tarifas anuales (RFP). Camino largo pero grande.": ": signs annual rates (RFP). A long road, but a big one.", "en fábricas pequeñas: suele decidir todo él mismo.": "at small plants: usually decides everything alone.", "en constructoras: pide flatbed y hot shot con urgencia y decide en el momento.": "at construction companies: orders flatbed and hot shot urgently and decides on the spot.", "Buscar transportistas y verificarlos": "Find carriers and vet them", "Tus proveedores son owner-operators, flotas pequeñas y compañías de camiones con autoridad activa. Búscalos donde hay camiones vacíos y verifica siempre MC, seguro y calificación de seguridad antes de darles una carga.": "Your suppliers are owner-operators, small fleets and trucking companies with active authority. Look for them where trucks sit empty, and always verify MC, insurance and safety rating before giving them a load.", "Verificar un transportista (FMCSA)": "Vet a carrier (FMCSA)", "Buscar por": "Search by", "Número MC": "MC number", "Número USDOT": "USDOT number", "Nombre": "Name", "Valor": "Value", "Abrir en SAFER": "Open in SAFER", "Lista de verificación antes de asignar carga": "Checklist before assigning a load", "Autoridad activa": "Active authority", "(Operating Authority: ACTIVE) y con más de 6 meses. Menos de 6 meses solo con referencias.": "(Operating Authority: ACTIVE) and older than 6 months. Under 6 months only with references.", "Seguro": "Insurance", ": responsabilidad civil de $1,000,000 y carga (cargo) de $100,000 mínimo. Pide certificado (COI) con tu nombre como certificate holder.": ": $1,000,000 auto liability and $100,000 cargo minimum. Request a certificate (COI) naming you as certificate holder.", ": no aceptar \"Unsatisfactory\". Revisa alertas BASIC en SMS.": ": never accept \"Unsatisfactory\". Check BASIC alerts in SMS.", "Teléfono y correo": "Phone and email", "coinciden con lo registrado en FMCSA. Si no, sospecha de robo de identidad de carrier.": "match what is registered with FMCSA. If not, suspect carrier identity theft.", "Sin doble brokerage": "No double brokering", ": el carrier no puede pasar tu carga a otro. Ponlo por escrito en el acuerdo carrier-broker.": ": the carrier cannot hand your load to someone else. Put it in writing in the broker-carrier agreement.", "W-9 y acuerdo firmado": "W-9 and signed agreement", "antes del primer viaje. Pago típico a 30 días o quick pay con descuento de 2–3 %.": "before the first trip. Typical pay is net 30 or quick pay with a 2–3% discount.", "Ciudad (opcional)": "City (optional)", "Equipo": "Equipment", "Load boards y asociaciones nacionales": "Load boards and national associations", "Dónde aparecen los camiones vacíos": "Where the empty trucks show up", "(DAT, Truckstop): publica tu carga y filtra \"trucks available\" en el origen. El carrier que llama para tu carga es un contacto nuevo: guárdalo.": "(DAT, Truckstop): post your load and filter \"trucks available\" at the origin. Every carrier that calls on your load is a new contact: save it.", "del I-95 e I-16 alrededor de Savannah: Pilot, Love's, TA. Muchos owner-operators hispanos.": "on I-95 and I-16 around Savannah: Pilot, Love's, TA. Many Hispanic owner-operators.", ": aserraderos, acerías y concesionarios de maquinaria conocen a los flatbed que los cargan; pregúntales por sus carriers.": ": sawmills, steel mills and equipment dealers know the flatbeds that load them; ask them for their carriers.", "Grupos de Facebook": "Facebook groups", ": \"Camioneros hispanos en USA\", \"Owner operators Georgia\", \"Dispatch en español\".": ": \"Camioneros hispanos en USA\", \"Owner operators Georgia\", \"Hot Shot Trucking\".", "Asociaciones estatales": "State associations", "(ver enlace por estado) y OOIDA: listas de miembros y eventos.": "(see link per state) and OOIDA: member lists and events.", ": grupos de Facebook \"Hot Shot Trucking\" y \"Hotshot en español\", concesionarios de remolques gooseneck. Muchos operan sin CDL por debajo de 26,001 lb de peso combinado; pide igual MC, seguro y placa.": ": Facebook groups \"Hot Shot Trucking\" and \"Hotshot en español\", gooseneck trailer dealers. Many run without a CDL under 26,001 lb combined weight; still require MC, insurance and plates.", "Prospectos": "Prospects", "Pipeline de clientes y transportistas": "Shipper and carrier pipeline", "Respaldo": "Backup", "+ Nuevo prospecto": "+ New prospect", "Tipo": "Type", "Todos": "All", "Buscar": "Search", "Orden": "Sort", "Próximo seguimiento": "Next follow-up", "Última actualización": "Last updated", "Respaldo del pipeline": "Pipeline backup", "Cerrar": "Close", "Los prospectos se guardan solo en este navegador. Para pasarlos a otro dispositivo o guardar una copia: copia el texto de abajo y pégalo en el otro dispositivo, luego \"Importar\".": "Prospects are saved only in this browser. To move them to another device or keep a copy: copy the text below and paste it on the other device, then \"Import\".", "Copiar respaldo": "Copy backup", "Importar (reemplaza lo actual)": "Import (replaces current)", "Qué decir": "What to say", "Guiones de llamada y preguntas clave": "Call scripts and key questions", "En inglés para la mayoría de los shippers y en español para transportistas hispanos. Corto, directo, y siempre termina con una pregunta que abra el siguiente paso.": "English for most shippers, Spanish for Hispanic carriers. Short, direct, and always end with a question that opens the next step.", "Clientes (shippers)": "Shippers", "Llamada en frío (EN)": "Cold call (EN)", "Si pasan con la persona: \"I won't take much of your time. Two quick questions: what lanes do you ship most, and where do you usually get stuck finding trucks? I have carriers coming empty into [region] every week and I'd like to quote one of those lanes for you.\"": "If they put the person on: \"I won't take much of your time. Two quick questions: what lanes do you ship most, and where do you usually get stuck finding trucks? I have carriers coming empty into [region] every week and I'd like to quote one of those lanes for you.\"", "Cierre: \"Can I send you a rate on your [origin → destination] lane this week, and would you give me a shot at the next load you can't cover?\"": "Close: \"Can I send you a rate on your [origin → destination] lane this week, and would you give me a shot at the next load you can't cover?\"", "Correo de seguimiento (EN)": "Follow-up email (EN)", "\"Hi [Name], thanks for the time today. As discussed: [lane] at $[X] all-in, [equipment], 24-hour tender. We're based in Savannah, MC [número], $[cargo] cargo coverage, and I personally track every load. If a truck falls through this week, call my cell: [teléfono].\"": "\"Hi [Name], thanks for the time today. As discussed: [lane] at $[X] all-in, [equipment], 24-hour tender. We're based in Savannah, MC [number], $[cargo] cargo coverage, and I personally track every load. If a truck falls through this week, call my cell: [phone].\"", "Pitch de hot shot (EN)": "Hot shot pitch (EN)", "Preguntas para calificar a un cliente": "Questions to qualify a shipper", "¿Cuántas cargas completas (truckload) mueven por semana? ¿LTL también?": "How many truckloads do you move per week? LTL too?", "¿Qué carriles (origen → destino) son los más frecuentes?": "Which lanes (origin → destination) are most frequent?", "¿Equipo: dry van, flatbed o hot shot (parcial urgente)? ¿Peso, dimensiones y tipo de producto?": "Equipment: dry van, flatbed or hot shot (urgent partial)? Weight, dimensions and product type?", "¿Con cuántas horas de anticipación tienden la carga?": "How many hours of notice do you give when tendering a load?", "¿Trabajan ya con brokers o solo con carriers directos? ¿Qué les falla?": "Do you already work with brokers or only direct carriers? What lets you down?", "¿Términos de pago (net 30, 45, 60)? ¿Hay proceso de alta de proveedor?": "Payment terms (net 30, 45, 60)? Is there a vendor setup process?", "¿Hacen licitación anual (RFP)? ¿Cuándo?": "Do you run an annual bid (RFP)? When?", "Objeciones frecuentes": "Common objections", "\"Ya tenemos brokers.\"": "\"We already have brokers.\"", "\"Perfecto, la mayoría tiene tres o cuatro. Solo pido ser la llamada de respaldo cuando uno falle. Una carga y usted decide.\"": "\"Perfect, most companies have three or four. I'm only asking to be the backup call when one falls through. One load and you decide.\"", "\"Envíeme sus tarifas.\"": "\"Send me your rates.\"", "\"Con gusto. ¿En qué carril le cotizo hoy? Una tarifa sin carril no le sirve de nada.\"": "\"Gladly. Which lane should I quote today? A rate without a lane is useless to you.\"", "\"Es muy caro.\"": "\"That's too expensive.\"", "\"¿Contra qué lo compara? Si me dice el número al que necesita llegar, le digo si puedo o no en cinco minutos.\"": "\"What are you comparing it to? Tell me the number you need to hit and I'll tell you yes or no in five minutes.\"", "Transportistas (carriers)": "Carriers", "Llamada de reclutamiento (ES)": "Recruiting call (Spanish)", "Llamada de reclutamiento (EN)": "Recruiting call (EN)", "Preguntas para calificar a un transportista": "Questions to qualify a carrier", "Número MC y USDOT. ¿Desde cuándo tienen autoridad?": "MC and USDOT numbers. Since when have you had authority?", "¿Cuántos camiones y de qué equipo? ¿Propios o con owner-operators?": "How many trucks and what equipment? Company-owned or owner-operators?", "¿Zonas donde suelen quedar vacíos (dónde necesitan carga de regreso)?": "Where do you usually end up empty (where do you need a backhaul)?", "¿Seguro: monto de responsabilidad y de carga? ¿Quién es la aseguradora?": "Insurance: liability and cargo amounts? Who is the insurer?", "¿Tienen ELD y rastreo? ¿Aceptan macropoint / tracking por app?": "Do you have ELD and tracking? Do you accept Macropoint / app tracking?", "¿Forma de pago preferida: net 30, quick pay, factoring? ¿Con qué factoring?": "Preferred payment: net 30, quick pay, factoring? Which factoring company?", "Hot shot: ¿largo del remolque (30–40 ft), peso máximo que cargan, CDL o no, ramplas y cadenas para maquinaria?": "Hot shot: trailer length (30–40 ft), max payload, CDL or not, ramps and chains for machinery?", "Señales de alerta": "Red flags", "Autoridad de menos de 3 meses y flota \"grande\" de la nada.": "Authority under 3 months and a \"big\" fleet out of nowhere.", "Teléfono o correo distinto al registrado en FMCSA.": "Phone or email different from what's registered with FMCSA.", "Presión para pagar por adelantado o cambiar datos de pago por correo.": "Pressure to pay upfront or to change payment details by email.", "No quieren firmar el acuerdo anti doble brokerage.": "They won't sign the no-double-brokering agreement.", "El chofer que llega no coincide con el nombre del carrier asignado.": "The driver who shows up doesn't match the assigned carrier's name.", "Rutina semanal sugerida": "Suggested weekly routine", "Día": "Day", "Mañana": "Morning", "Tarde": "Afternoon", "Lunes": "Monday", "Revisar mercados de la semana (DAT Trendlines). Elegir 2 estados calientes y 2 fríos.": "Review the week's markets (DAT Trendlines). Pick 2 hot states and 2 cold ones.", "20 llamadas a shippers en los estados calientes.": "20 calls to shippers in the hot states.", "Martes": "Tuesday", "Seguimientos vencidos del pipeline.": "Overdue follow-ups from the pipeline.", "Reclutar 10 carriers en los estados fríos (load board + llamadas).": "Recruit 10 carriers in the cold states (load board + calls).", "Miércoles": "Wednesday", "Cotizaciones pendientes y correos de seguimiento.": "Pending quotes and follow-up emails.", "20 llamadas a shippers nuevos (zona Savannah / Atlanta).": "20 calls to new shippers (Savannah / Atlanta area).", "Jueves": "Thursday", "Verificar carriers nuevos en FMCSA y completar carrier packets.": "Vet new carriers on FMCSA and complete carrier packets.", "Llamadas a constructoras, distribuidores de materiales y concesionarios de maquinaria (flatbed / hot shot).": "Calls to contractors, building-material distributors and equipment dealers (flatbed / hot shot).", "Viernes": "Friday", "Confirmar cargas de la próxima semana con clientes activos.": "Confirm next week's loads with active shippers.", "Limpiar pipeline, marcar descartados, planear la semana.": "Clean up the pipeline, mark drops, plan the week.", "Nuevo prospecto": "New prospect", "Editar prospecto": "Edit prospect", "Cliente (shipper)": "Shipper", "Transportista (carrier)": "Carrier", "Etapa": "Stage", "Empresa": "Company", "Ciudad": "City", "Contacto": "Contact", "Teléfono": "Phone", "Correo": "Email", "MC / USDOT (transportistas)": "MC / USDOT (carriers)", "Carril o zona": "Lane or area", "Notas": "Notes", "Eliminar": "Delete", "Guardar": "Save", "Mapa de estados": "State map", "ej. Pooler, Dalton, Atlanta": "e.g. Pooler, Dalton, Atlanta", "ej. 123456": "e.g. 123456", "ej. Statesboro, Jacksonville": "e.g. Statesboro, Jacksonville", "nombre, ciudad, contacto, MC…": "name, city, contact, MC…", "Nombre de la empresa": "Company name", "Nombre y cargo": "Name and title", "Dry van, flatbed, hot shot…": "Dry van, flatbed, hot shot…", "Qué dijeron, tarifa pedida, volumen, quién decide…": "What they said, rate asked, volume, who decides…", "Invierno · dic–feb": "Winter · Dec–Feb", "Primavera · mar–may": "Spring · Mar–May", "Verano · jun–ago": "Summer · Jun–Aug", "Otoño · sep–nov": "Fall · Sep–Nov", "Muy caliente": "Very hot", "Caliente": "Hot", "Templado": "Balanced", "Frío": "Cold", "Muy frío": "Very cold", "Sobran cargas y faltan camiones. Prioridad: clientes. Los camiones que salen de aquí cobran caro.": "More loads than trucks. Priority: shippers. Trucks leaving here charge a premium.", "Buena demanda saliente. Busca clientes; hay carriers pero con tarifa firme.": "Good outbound demand. Look for shippers; carriers exist but hold firm on rate.", "Equilibrado. Buen sitio para ambos, sin ventaja clara.": "Balanced. Fine for both, no clear edge.", "Más camiones que carga. Prioridad: transportistas que quieran salir barato.": "More trucks than loads. Priority: carriers willing to leave cheap.", "Muchos camiones vacíos. Reclutar carriers aquí para cubrir carga de mercados calientes.": "Lots of empty trucks. Recruit carriers here to cover hot-market freight.", "Variación estacional:": "Seasonal variation:", "Industrias que generan carga": "Freight-generating industries", "Hubs": "Hubs", "Hubs:": "Hubs:", "Buscar clientes aquí": "Find shippers here", "Centros de distribución y fábricas en": "Distribution centers and plants in", "Mapa": "Map", "Buscar transportistas aquí": "Find carriers here", "Compañías de camiones en": "Trucking companies in", "Asociación estatal: directorio de miembros y eventos": "State association: member directory and events", "Tarifas y ratio carga/camión": "Rates and load-to-truck ratio", "DAT Trendlines, actualizado semanalmente": "DAT Trendlines, updated weekly", "Abrir": "Open", "Buscar clientes en": "Find shippers in", "Buscar transportistas en": "Find carriers in", "Ninguno en esta temporada": "None this season", "Ver": "View", "Resto de EE. UU.": "Rest of U.S.", "Centros de distribución": "Distribution centers", "Fábricas / manufactura": "Factories / manufacturing", "Alimentos y bebidas (seco)": "Food and beverage (dry)", "Papel, cartón y empaques": "Paper, board and packaging", "Muebles y textiles": "Furniture and textiles", "Automotriz y autopartes": "Automotive and auto parts", "Materiales de construcción": "Building materials", "Metales y acero": "Metals and steel", "Madera y aserraderos": "Lumber and sawmills", "Concesionarios de maquinaria": "Equipment dealers", "Constructoras y contratistas": "Builders and contractors", "Fabricantes de remolques y equipo": "Trailer and equipment manufacturers", "Plásticos y químicos (empacado)": "Plastics and chemicals (packaged)", "Agrícola (equipo, fertilizante)": "Agriculture (equipment, fertilizer)", "en": "in", "Google Maps: lista con teléfono y dirección": "Google Maps: list with phone and address", "Gerentes de logística en": "Logistics managers in", "LinkedIn: personas con cargo de transporte/logística": "LinkedIn: people with transportation/logistics titles", "Shipping managers vía Google": "Shipping managers via Google", "Perfiles públicos sin cuenta premium": "Public profiles, no premium account needed", "Empresas que anuncian vacantes de embarque": "Companies posting shipping jobs", "Quien contrata shipping clerks mueve mucha carga": "Whoever hires shipping clerks moves a lot of freight", "Obras y proyectos en curso en": "Construction projects underway in", "Constructoras con proyectos activos piden hot shot y flatbed con urgencia": "Contractors with active projects order hot shot and flatbed urgently", "Empresas que anuncian 'flatbed' o 'hot shot' en sus envíos": "Companies mentioning 'flatbed' or 'hot shot' in their shipping", "Quien lo menciona en su web ya lo compra": "If they mention it on their site, they already buy it", "DCs alrededor del Puerto de Savannah": "DCs around the Port of Savannah", "Embarcan en dry van hacia el interior; no cubrimos contenedores": "They ship inland in dry vans; we don't cover containers", "Directorio de fabricantes por producto y estado": "Manufacturer directory by product and state", "Directorio de fabricantes de": "Manufacturer directory for", "Cámaras y agencias de desarrollo publican listas por condado": "Chambers and development agencies publish lists by county", "Parques industriales de": "Industrial parks in", "Cada parque tiene su lista de inquilinos": "Every park has its tenant list", "Cuántas fábricas y almacenes hay por condado (NAICS 31–33, 493)": "How many plants and warehouses per county (NAICS 31–33, 493)", "Estadísticas, eventos y contactos del puerto": "Port statistics, events and contacts", "Autoridad, flota, inspecciones, rating": "Authority, fleet, inspections, rating", "Seguro vigente y aseguradora registrada": "Current insurance and registered insurer", "Alertas BASIC: horas de servicio, mantenimiento, choques": "BASIC alerts: hours of service, maintenance, crashes", "Buscar quejas y fraude": "Search complaints and fraud", "Google: nombre del carrier + double brokering / scam": "Google: carrier name + double brokering / scam", "nombre del carrier": "carrier name", "Mercado frío: buen sitio para reclutar carriers que quieren salir con tarifa baja.": "Cold market: good place to recruit carriers who want out at a low rate.", "Mercado caliente: los carriers de aquí cobran alto; úsalo para carga saliente, no para reclutar barato.": "Hot market: carriers here charge high; use it for outbound freight, not for cheap recruiting.", "Mercado equilibrado.": "Balanced market.", "Google Maps: flotas locales con teléfono": "Google Maps: local fleets with phone numbers", "Owner-operators": "Owner-operators", "Google: perfiles, anuncios y grupos": "Google: profiles, ads and groups", "Transportistas hispanos en": "Hispanic carriers in", "Facebook y grupos en español": "Facebook and Spanish-language groups", "Carriers en LinkedIn": "Carriers on LinkedIn", "Empresas de transporte con sede en": "Trucking companies based in", "Directorio de miembros de la asociación estatal": "State association member directory", "Truck stops cerca de": "Truck stops near", "Pilot, Love's, TA: tablones y choferes en persona": "Pilot, Love's, TA: bulletin boards and drivers in person", "Load board líder; publica cargas y ve camiones disponibles": "Leading load board; post loads and see available trucks", "Load board con verificación de carriers (RMIS)": "Load board with carrier vetting (RMIS)", "Load board económico, muchos owner-operators": "Budget load board, many owner-operators", "Asociación de owner-operators independientes": "Independent owner-operator association", "Federación de asociaciones estatales": "Federation of state associations", "Verificación de identidad de carriers y alta digital": "Carrier identity verification and digital onboarding", "Nuevo": "New", "Contactado": "Contacted", "Interesado": "Interested", "Cotizado": "Quoted", "Activo": "Active", "Descartado": "Dropped", "Clientes en pipeline": "Shippers in pipeline", "Transportistas en pipeline": "Carriers in pipeline", "Activos": "Active", "Seguimientos pendientes": "Pending follow-ups", "Georgia ahora": "Georgia now", "Cliente": "Shipper", "Transportista": "Carrier", "vencido": "overdue", "hoy": "today", "Nada pendiente hoy. Ve a Mercados y elige dónde llamar.": "Nothing pending today. Go to Markets and pick where to call.", "+ Pipeline": "+ Pipeline", "Vencido": "Overdue", "Hoy": "Today", "Llamar": "Call", "Editar": "Edit", "Siguiente etapa": "Next stage", "Ya está en la última etapa activa": "Already at the last active stage", "Todavía no hay prospectos aquí. Añade uno con \"+ Nuevo prospecto\" o desde las búsquedas de Clientes y Transportistas.": "No prospects here yet. Add one with \"+ New prospect\" or from the Shippers and Carriers searches.", "Guardado": "Saved", "Eliminado": "Deleted", "¿Eliminar": "Delete", "Copiado": "Copied", "Selecciona y copia el texto": "Select and copy the text", "El texto no es un respaldo válido": "That text is not a valid backup", "Importado": "Imported", "No se pudo guardar en este navegador": "Could not save in this browser", "Importar": "Import", "prospectos y reemplazar los": "prospects and replace the current", "actuales?": "?", "Filadelfia / Harrisburg, PA": "Philadelphia / Harrisburg, PA", "Newark / Nueva York": "Newark / New York", "Dry van: DCs del puerto a retail; flatbed: materiales": "Dry van: port DCs to retail; flatbed: materials", "Flatbed: automotriz y acero; hot shot: partials urgentes": "Flatbed: automotive and steel; hot shot: urgent partials", "Dry van: retail; flatbed: construcción": "Dry van: retail; flatbed: construction", "Flatbed: llantas, BMW, maquinaria": "Flatbed: tires, BMW, machinery", "Dry van: consumo, muebles; flatbed: construcción": "Dry van: consumer goods, furniture; flatbed: construction", "Dry van: retail inbound; camiones de regreso baratos": "Dry van: inbound retail; cheap backhaul trucks", "Dry van: farmacéutica, muebles; hot shot: partes": "Dry van: pharma, furniture; hot shot: parts", "Dry van: consumo; muchos camiones vacíos de regreso": "Dry van: consumer goods; many empty trucks heading back", "Dry van: DCs; flatbed: madera, acero": "Dry van: DCs; flatbed: lumber, steel", "Dry van: consumo; flatbed: construcción": "Dry van: consumer goods; flatbed: construction", "Dry van: DCs de Lehigh Valley y Harrisburg": "Dry van: Lehigh Valley and Harrisburg DCs", "Dry van: consumo; tarifa alta, regreso barato": "Dry van: consumer goods; high rate out, cheap back", "Distribuidores de materiales de construcción": "Building-material distributors", "Madera, acero, ladrillo, techos. Flatbed y hot shot a obras en toda la Costa Este.": "Lumber, steel, brick, roofing. Flatbed and hot shot to job sites across the East Coast.", "Caterpillar, John Deere, Kubota, Bobcat: mueven equipo en flatbed y hot shot todos los días.": "Caterpillar, John Deere, Kubota, Bobcat: they move equipment on flatbed and hot shot every day.", "Planta de autos y baterías. Cientos de proveedores alrededor (Bryan y Bulloch). Flatbed, dry van, just-in-time.": "Car and battery plant. Hundreds of suppliers around it (Bryan and Bulloch). Flatbed, dry van, just-in-time.", "Papel y cartón. Dry van y flatbed de rollos.": "Paper and board. Dry van and flatbed rolls.", "Maquinaria de construcción. Flatbed y step deck.": "Construction machinery. Flatbed and step deck.", "Aeroespacial. Carga de alto valor y proveedores.": "Aerospace. High-value freight and suppliers.", "Fabricante de remolques. Contactos directos con flotas.": "Trailer manufacturer. Direct contacts with fleets.", "Centro de distribución. Dry van saliente a DCs regionales del Sureste.": "Distribution center. Outbound dry van to regional DCs in the Southeast.", "Muebles; dry van de alto cubo a tiendas del Sureste.": "Furniture; high-cube dry van to stores across the Southeast.", "Materiales de construcción; dry van y flatbed.": "Building materials; dry van and flatbed.", "Retail; dry van saliente a tiendas y DCs regionales.": "Retail; outbound dry van to stores and regional DCs.", "Papel y yeso. Dry van y flatbed.": "Paper and gypsum. Dry van and flatbed.", "Turbinas y componentes. Flatbed, step deck y sobredimensionada.": "Turbines and components. Flatbed, step deck and oversize.", "Aerospace & auto suppliers · Chatham y Effingham": "Aerospace & auto suppliers · Chatham and Effingham", "Parques industriales: Savannah Manufacturing Center, Crossroads, Effingham Industrial Park.": "Industrial parks: Savannah Manufacturing Center, Crossroads, Effingham Industrial Park.", "Nueva York, Albany, Buffalo, Syracuse": "New York, Albany, Buffalo, Syracuse", "Harrisburg, Allentown, Filadelfia, Pittsburgh": "Harrisburg, Allentown, Philadelphia, Pittsburgh", "Los Ángeles, Ontario, Fresno, Stockton, Oakland": "Los Angeles, Ontario, Fresno, Stockton, Oakland", "Nueva Orleans, Baton Rouge, Lake Charles, Shreveport": "New Orleans, Baton Rouge, Lake Charles, Shreveport", "Indianápolis, Fort Wayne, Elkhart": "Indianapolis, Fort Wayne, Elkhart", "DCs de retail alrededor del puerto de Savannah y de Atlanta, automotriz (Hyundai Metaplant, Kia), alfombras y pisos (Dalton), papel y cartón, madera, materiales de construcción": "Retail DCs around the Port of Savannah and Atlanta, automotive (Hyundai Metaplant, Kia), carpet and flooring (Dalton), paper and board, lumber, building materials", "Petroquímica (Houston), cruce fronterizo (Laredo), frutas y verduras del Valle del Río Grande, DCs de Dallas–Fort Worth, construcción": "Petrochemicals (Houston), border crossing (Laredo), Rio Grande Valley produce, Dallas–Fort Worth DCs, construction", "Frutas y verduras del Valle Central, puertos de LA/Long Beach, DCs del Inland Empire, vino, electrónica": "Central Valley produce, LA/Long Beach ports, Inland Empire DCs, wine, electronics", "Hub ferroviario intermodal de Chicago, alimentos procesados, acero, maquinaria, granos": "Chicago intermodal rail hub, processed food, steel, machinery, grain", "Manufactura pesada, autopartes, DCs de Columbus, acero, plásticos, alimentos": "Heavy manufacturing, auto parts, Columbus DCs, steel, plastics, food", "DCs de Harrisburg y Lehigh Valley, acero, alimentos (Hershey), farmacéutica": "Harrisburg and Lehigh Valley DCs, steel, food (Hershey), pharma", "Muebles (High Point), textiles, farmacéutica (Research Triangle), cerdo y pollo, DCs de Charlotte": "Furniture (High Point), textiles, pharma (Research Triangle), pork and poultry, Charlotte DCs", "Automotriz (Nissan, Volkswagen), hub de Memphis (FedEx), DCs de Nashville, químicos": "Automotive (Nissan, Volkswagen), Memphis hub (FedEx), Nashville DCs, chemicals", "Autopartes, acero (Gary), casas rodantes (Elkhart), farmacéutica (Lilly), DCs de Indianápolis": "Auto parts, steel (Gary), RVs (Elkhart), pharma (Lilly), Indianapolis DCs", "Puerto de NY/NJ, farmacéutica, alimentos y bebidas, DCs del corredor I-95": "Port of NY/NJ, pharma, food and beverage, I-95 corridor DCs", "Papel, lácteos y queso, maquinaria, alimentos procesados, cerveza": "Paper, dairy and cheese, machinery, processed food, beer", "Automotriz (Detroit), autopartes, muebles de oficina (Grand Rapids), agricultura": "Automotive (Detroit), auto parts, office furniture (Grand Rapids), agriculture", "Walmart (Bentonville), pollo (Tyson), arroz, papel, acero": "Walmart (Bentonville), poultry (Tyson), rice, paper, steel", "Alimentos y bebidas, automotriz, hub de Kansas City, químicos y agroquímicos": "Food and beverage, automotive, Kansas City hub, chemicals and agrochemicals", "BMW (Spartanburg), llantas (Michelin, Bridgestone), Boeing, Puerto de Charleston, Volvo": "BMW (Spartanburg), tires (Michelin, Bridgestone), Boeing, Port of Charleston, Volvo", "Automotriz (Toyota, Ford), hub de UPS en Louisville, bourbon, aluminio": "Automotive (Toyota, Ford), UPS hub in Louisville, bourbon, aluminum", "Automotriz (Mercedes, Honda, Hyundai), acero, pollo, Puerto de Mobile, aeroespacial (Huntsville)": "Automotive (Mercedes, Honda, Hyundai), steel, poultry, Port of Mobile, aerospace (Huntsville)", "Alimentos (General Mills, Hormel), maquinaria, granos, papel": "Food (General Mills, Hormel), machinery, grain, paper", "Granos, cerdo, maquinaria agrícola (John Deere), etanol, alimentos": "Grain, pork, farm machinery (John Deere), ethanol, food", "Puerto de Virginia (Norfolk), DCs del valle de Shenandoah, alimentos, madera": "Port of Virginia (Norfolk), Shenandoah Valley DCs, food, lumber", "Alimentos y bebidas, DCs del norte del estado, farmacéutica, manufactura": "Food and beverage, upstate DCs, pharma, manufacturing", "Puerto de Baltimore (autos y roll-on), alimentos, DCs del corredor I-95": "Port of Baltimore (autos and ro-ro), food, I-95 corridor DCs", "Pollo, muebles (Tupelo), automotriz (Nissan, Toyota), madera": "Poultry, furniture (Tupelo), automotive (Nissan, Toyota), lumber", "Petroquímica, puertos del Mississippi, granos de exportación, azúcar": "Petrochemicals, Mississippi River ports, export grain, sugar", "Petróleo y gas, carne, aeroespacial, plásticos": "Oil and gas, meat, aerospace, plastics", "Carne (Dodge City, Garden City), trigo, aviación (Wichita), Kansas City": "Meat (Dodge City, Garden City), wheat, aviation (Wichita), Kansas City", "Carne de res, granos, etanol, maquinaria agrícola": "Beef, grain, ethanol, farm machinery", "Manzanas y frutas (Yakima, Wenatchee), Boeing, puertos de Seattle/Tacoma, papel": "Apples and fruit (Yakima, Wenatchee), Boeing, Seattle/Tacoma ports, paper", "Farmacéutica y biotecnología, alimentos, electrónica": "Pharma and biotech, food, electronics", "Aeroespacial (Pratt & Whitney), manufactura de precisión, alimentos": "Aerospace (Pratt & Whitney), precision manufacturing, food", "Frutas y verduras de invierno, cítricos, materiales de construcción, retail (mercado muy inbound: sobran camiones el resto del año)": "Winter produce, citrus, building materials, retail (very inbound market: trucks are plentiful the rest of the year)", "Frutas y verduras de invierno (Yuma, Nogales), semiconductores, minería, DCs de Phoenix": "Winter produce (Yuma, Nogales), semiconductors, mining, Phoenix DCs", "Madera y papel, agricultura del Willamette, Nike, tecnología": "Lumber and paper, Willamette agriculture, Nike, tech", "DCs de Salt Lake City, minería, alimentos, aeroespacial": "Salt Lake City DCs, mining, food, aerospace", "Cerveza y alimentos, energía, DCs de Denver (mercado inbound)": "Beer and food, energy, Denver DCs (inbound market)", "Papas (Idaho Falls), lácteos, madera, semiconductores (Micron)": "Potatoes (Idaho Falls), dairy, lumber, semiconductors (Micron)", "Carbón, químicos, madera, acero": "Coal, chemicals, lumber, steel", "Manufactura de precisión, electrónica": "Precision manufacturing, electronics", "Papel y madera, mariscos, papas (Aroostook)": "Paper and lumber, seafood, potatoes (Aroostook)", "Pollo (Delmarva), químicos, DCs del corredor I-95": "Poultry (Delmarva), chemicals, I-95 corridor DCs", "Manufactura ligera, joyería, alimentos": "Light manufacturing, jewelry, food", "Lácteos, jarabe de arce, granito": "Dairy, maple syrup, granite", "DCs de Reno y Las Vegas (mercado inbound), minería": "Reno and Las Vegas DCs (inbound market), mining", "Petróleo (Permian), chile, cruce fronterizo (Santa Teresa)": "Oil (Permian), chile, border crossing (Santa Teresa)", "Ganado, trigo, madera, petróleo (Bakken)": "Cattle, wheat, lumber, oil (Bakken)", "Carbón, gas natural, ganado": "Coal, natural gas, cattle", "Petróleo (Bakken), trigo, remolacha azucarera": "Oil (Bakken), wheat, sugar beets", "Ganado, granos, etanol, carne": "Cattle, grain, ethanol, meat"};
+let lang = "es";
+try{ const st=localStorage.getItem("yex.lang"); lang = st || ((navigator.language||"").toLowerCase().startsWith("en")?"en":"es"); }catch(e){}
+if(lang!=="en") lang="es";
+const norm = x => String(x).replace(/\s+/g," ").trim();
+const t = x => { if(lang!=="en") return x; const k=norm(x); return EN[k]!==undefined ? EN[k] : x; };
+const I18N_NODES = [];
+(function collect(){
+  const roots=[document.querySelector("header"),document.querySelector("main"),document.getElementById("dlg")];
+  for(const root of roots){
+    const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT,{acceptNode(n){
+      if(n.nodeType===1){ if(n.tagName==="SCRIPT"||n.tagName==="STYLE") return NodeFilter.FILTER_REJECT; return NodeFilter.FILTER_ACCEPT; }
+      return norm(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP; }});
+    let n; while((n=w.nextNode())){
+      if(n.nodeType===3){ I18N_NODES.push({n,orig:n.nodeValue}); }
+      else for(const a of ["placeholder","title","aria-label"]){ if(n.hasAttribute(a)) I18N_NODES.push({n,attr:a,orig:n.getAttribute(a)}); }
+    }
+  }
+})();
+function applyStatic(){
+  for(const e of I18N_NODES){
+    const k=norm(e.orig); const m=e.orig.match(/^(\s*)([\s\S]*?)(\s*)$/); const v = lang==="en" && EN[k]!==undefined ? m[1]+EN[k]+m[3] : e.orig;
+    if(e.attr) e.n.setAttribute(e.attr,v); else e.n.nodeValue=v;
+  }
+  document.documentElement.lang=lang;
+  document.querySelectorAll("#lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===lang));
+}
+
+/* ===================== DATOS ===================== */
+const STATES = [
+ // c, name, x, y, base heat, seasonal adj, industries, hubs, association
+ ["GA","Georgia",7,6,5,{},"DCs de retail alrededor del puerto de Savannah y de Atlanta, automotriz (Hyundai Metaplant, Kia), alfombras y pisos (Dalton), papel y cartón, madera, materiales de construcción","Atlanta, Savannah, Macon, Dalton, Augusta","Georgia Motor Trucking Association"],
+ ["TX","Texas",3,7,5,{},"Petroquímica (Houston), cruce fronterizo (Laredo), frutas y verduras del Valle del Río Grande, DCs de Dallas–Fort Worth, construcción","Dallas, Houston, Laredo, San Antonio, McAllen","Texas Trucking Association"],
+ ["CA","California",0,4,5,{primavera:0,otono:0},"Frutas y verduras del Valle Central, puertos de LA/Long Beach, DCs del Inland Empire, vino, electrónica","Los Ángeles, Ontario, Fresno, Stockton, Oakland","California Trucking Association"],
+ ["IL","Illinois",5,2,5,{invierno:-1},"Hub ferroviario intermodal de Chicago, alimentos procesados, acero, maquinaria, granos","Chicago, Joliet, Rockford, Peoria","Illinois Trucking Association"],
+ ["OH","Ohio",6,3,5,{},"Manufactura pesada, autopartes, DCs de Columbus, acero, plásticos, alimentos","Columbus, Cincinnati, Cleveland, Toledo","Ohio Trucking Association"],
+ ["PA","Pennsylvania",7,3,5,{},"DCs de Harrisburg y Lehigh Valley, acero, alimentos (Hershey), farmacéutica","Harrisburg, Allentown, Filadelfia, Pittsburgh","Pennsylvania Motor Truck Association"],
+ ["NC","North Carolina",6,5,4,{},"Muebles (High Point), textiles, farmacéutica (Research Triangle), cerdo y pollo, DCs de Charlotte","Charlotte, Greensboro, Raleigh, Wilmington","North Carolina Trucking Association"],
+ ["TN","Tennessee",5,5,4,{otono:1},"Automotriz (Nissan, Volkswagen), hub de Memphis (FedEx), DCs de Nashville, químicos","Memphis, Nashville, Chattanooga, Knoxville","Tennessee Trucking Association"],
+ ["IN","Indiana",5,3,4,{},"Autopartes, acero (Gary), casas rodantes (Elkhart), farmacéutica (Lilly), DCs de Indianápolis","Indianápolis, Fort Wayne, Elkhart","Indiana Motor Truck Association"],
+ ["NJ","New Jersey",8,3,4,{},"Puerto de NY/NJ, farmacéutica, alimentos y bebidas, DCs del corredor I-95","Newark, Elizabeth, Edison","New Jersey Motor Truck Association"],
+ ["WI","Wisconsin",5,1,4,{invierno:-1},"Papel, lácteos y queso, maquinaria, alimentos procesados, cerveza","Milwaukee, Green Bay, Madison","Wisconsin Motor Carriers Association"],
+ ["MI","Michigan",6,2,4,{invierno:-1},"Automotriz (Detroit), autopartes, muebles de oficina (Grand Rapids), agricultura","Detroit, Grand Rapids, Lansing","Michigan Trucking Association"],
+ ["AR","Arkansas",4,5,4,{},"Walmart (Bentonville), pollo (Tyson), arroz, papel, acero","Little Rock, Fort Smith, Bentonville","Arkansas Trucking Association"],
+ ["MO","Missouri",4,4,4,{},"Alimentos y bebidas, automotriz, hub de Kansas City, químicos y agroquímicos","St. Louis, Kansas City, Springfield","Missouri Trucking Association"],
+ ["SC","South Carolina",7,5,4,{},"BMW (Spartanburg), llantas (Michelin, Bridgestone), Boeing, Puerto de Charleston, Volvo","Charleston, Greenville, Columbia","South Carolina Trucking Association"],
+ ["KY","Kentucky",5,4,4,{},"Automotriz (Toyota, Ford), hub de UPS en Louisville, bourbon, aluminio","Louisville, Lexington, Bowling Green","Kentucky Trucking Association"],
+ ["AL","Alabama",6,6,4,{},"Automotriz (Mercedes, Honda, Hyundai), acero, pollo, Puerto de Mobile, aeroespacial (Huntsville)","Birmingham, Montgomery, Huntsville, Mobile","Alabama Trucking Association"],
+ ["MN","Minnesota",4,2,4,{invierno:-1,otono:1},"Alimentos (General Mills, Hormel), maquinaria, granos, papel","Minneapolis, St. Paul, Rochester","Minnesota Trucking Association"],
+ ["IA","Iowa",4,3,4,{invierno:-1,otono:1},"Granos, cerdo, maquinaria agrícola (John Deere), etanol, alimentos","Des Moines, Cedar Rapids, Davenport","Iowa Motor Truck Association"],
+ ["VA","Virginia",7,4,4,{},"Puerto de Virginia (Norfolk), DCs del valle de Shenandoah, alimentos, madera","Richmond, Norfolk, Roanoke","Virginia Trucking Association"],
+ ["NY","New York",8,2,3,{},"Alimentos y bebidas, DCs del norte del estado, farmacéutica, manufactura","Nueva York, Albany, Buffalo, Syracuse","Trucking Association of New York"],
+ ["MD","Maryland",8,4,3,{},"Puerto de Baltimore (autos y roll-on), alimentos, DCs del corredor I-95","Baltimore, Hagerstown","Maryland Motor Truck Association"],
+ ["MS","Mississippi",5,6,3,{},"Pollo, muebles (Tupelo), automotriz (Nissan, Toyota), madera","Jackson, Tupelo, Gulfport","Mississippi Trucking Association"],
+ ["LA","Louisiana",4,6,3,{},"Petroquímica, puertos del Mississippi, granos de exportación, azúcar","Nueva Orleans, Baton Rouge, Lake Charles, Shreveport","Louisiana Motor Transport Association"],
+ ["OK","Oklahoma",3,6,3,{},"Petróleo y gas, carne, aeroespacial, plásticos","Oklahoma City, Tulsa","Oklahoma Trucking Association"],
+ ["KS","Kansas",3,5,3,{otono:1},"Carne (Dodge City, Garden City), trigo, aviación (Wichita), Kansas City","Kansas City, Wichita","Kansas Motor Carriers Association"],
+ ["NE","Nebraska",3,4,3,{invierno:-1,otono:1},"Carne de res, granos, etanol, maquinaria agrícola","Omaha, Lincoln, Grand Island","Nebraska Trucking Association"],
+ ["WA","Washington",0,2,3,{otono:1},"Manzanas y frutas (Yakima, Wenatchee), Boeing, puertos de Seattle/Tacoma, papel","Seattle, Tacoma, Spokane, Yakima","Washington Trucking Associations"],
+ ["MA","Massachusetts",9,2,3,{},"Farmacéutica y biotecnología, alimentos, electrónica","Boston, Worcester, Springfield","Trucking Association of Massachusetts"],
+ ["CT","Connecticut",9,3,3,{},"Aeroespacial (Pratt & Whitney), manufactura de precisión, alimentos","Hartford, New Haven","Motor Transport Association of Connecticut"],
+ ["FL","Florida",7,7,2,{invierno:2,primavera:2},"Frutas y verduras de invierno, cítricos, materiales de construcción, retail (mercado muy inbound: sobran camiones el resto del año)","Miami, Orlando, Tampa, Jacksonville, Lakeland","Florida Trucking Association"],
+ ["AZ","Arizona",1,5,2,{invierno:2,primavera:1},"Frutas y verduras de invierno (Yuma, Nogales), semiconductores, minería, DCs de Phoenix","Phoenix, Tucson, Nogales, Yuma","Arizona Trucking Association"],
+ ["OR","Oregon",0,3,2,{},"Madera y papel, agricultura del Willamette, Nike, tecnología","Portland, Salem, Eugene","Oregon Trucking Associations"],
+ ["UT","Utah",1,4,2,{},"DCs de Salt Lake City, minería, alimentos, aeroespacial","Salt Lake City, Ogden","Utah Trucking Association"],
+ ["CO","Colorado",2,4,2,{},"Cerveza y alimentos, energía, DCs de Denver (mercado inbound)","Denver, Colorado Springs","Colorado Motor Carriers Association"],
+ ["ID","Idaho",1,2,2,{invierno:-1,otono:1},"Papas (Idaho Falls), lácteos, madera, semiconductores (Micron)","Boise, Twin Falls, Idaho Falls","Idaho Trucking Association"],
+ ["WV","West Virginia",6,4,2,{},"Carbón, químicos, madera, acero","Charleston, Huntington","West Virginia Trucking Association"],
+ ["NH","New Hampshire",10,1,2,{},"Manufactura de precisión, electrónica","Manchester, Nashua","New Hampshire Motor Transport Association"],
+ ["ME","Maine",11,0,2,{},"Papel y madera, mariscos, papas (Aroostook)","Portland, Bangor","Maine Motor Transport Association"],
+ ["DE","Delaware",9,4,2,{},"Pollo (Delmarva), químicos, DCs del corredor I-95","Wilmington, Dover","Delaware Motor Transport Association"],
+ ["RI","Rhode Island",10,3,2,{},"Manufactura ligera, joyería, alimentos","Providence","Rhode Island Trucking Association"],
+ ["VT","Vermont",9,1,2,{},"Lácteos, jarabe de arce, granito","Burlington","Vermont Truck and Bus Association"],
+ ["NV","Nevada",1,3,1,{},"DCs de Reno y Las Vegas (mercado inbound), minería","Las Vegas, Reno","Nevada Trucking Association"],
+ ["NM","New Mexico",2,5,1,{},"Petróleo (Permian), chile, cruce fronterizo (Santa Teresa)","Albuquerque, Las Cruces","New Mexico Trucking Association"],
+ ["MT","Montana",2,2,1,{invierno:-0},"Ganado, trigo, madera, petróleo (Bakken)","Billings, Missoula","Montana Trucking Association"],
+ ["WY","Wyoming",2,3,1,{},"Carbón, gas natural, ganado","Cheyenne, Casper","Wyoming Trucking Association"],
+ ["ND","North Dakota",3,2,1,{otono:1},"Petróleo (Bakken), trigo, remolacha azucarera","Fargo, Bismarck","North Dakota Motor Carriers Association"],
+ ["SD","South Dakota",3,3,1,{otono:1},"Ganado, granos, etanol, carne","Sioux Falls, Rapid City","South Dakota Trucking Association"],
+].map(a=>({c:a[0],n:a[1],x:a[2],y:a[3],h:a[4],adj:a[5],ind:a[6],hubs:a[7],assoc:a[8]}));
+const byCode = Object.fromEntries(STATES.map(s=>[s.c,s]));
+
+const SEASONS = {invierno:"Invierno · dic–feb",primavera:"Primavera · mar–may",verano:"Verano · jun–ago",otono:"Otoño · sep–nov"};
+const HEAT_LABEL = {5:"Muy caliente",4:"Caliente",3:"Templado",2:"Frío",1:"Muy frío"};
+const HEAT_HINT = {
+ 5:"Sobran cargas y faltan camiones. Prioridad: clientes. Los camiones que salen de aquí cobran caro.",
+ 4:"Buena demanda saliente. Busca clientes; hay carriers pero con tarifa firme.",
+ 3:"Equilibrado. Buen sitio para ambos, sin ventaja clara.",
+ 2:"Más camiones que carga. Prioridad: transportistas que quieran salir barato.",
+ 1:"Muchos camiones vacíos. Reclutar carriers aquí para cubrir carga de mercados calientes."
+};
+
+const INDUSTRIES = [
+ ["Centros de distribución","distribution center warehouse","Dry van"],
+ ["Fábricas / manufactura","manufacturing plant","Dry van"],
+ ["Alimentos y bebidas (seco)","food beverage manufacturer warehouse","Dry van"],
+ ["Papel, cartón y empaques","paper mill packaging plant corrugated","Dry van"],
+ ["Muebles y textiles","furniture manufacturer textile mill","Dry van"],
+ ["Automotriz y autopartes","automotive parts manufacturer","Dry van"],
+ ["Materiales de construcción","building materials supplier lumber yard","Flatbed"],
+ ["Metales y acero","steel fabrication metal service center","Flatbed"],
+ ["Madera y aserraderos","lumber mill sawmill","Flatbed"],
+ ["Concesionarios de maquinaria","heavy equipment dealer rental","Flatbed"],
+ ["Constructoras y contratistas","general contractor construction company","Hot shot"],
+ ["Fabricantes de remolques y equipo","trailer manufacturer equipment manufacturer","Hot shot"],
+ ["Plásticos y químicos (empacado)","plastics manufacturer chemical packaging","Dry van"],
+ ["Agrícola (equipo, fertilizante)","farm equipment dealer fertilizer plant","Hot shot"],
+];
+
+const LANES = [
+ ["Atlanta, GA","I-16 → I-75",250,"Dry van: DCs del puerto a retail; flatbed: materiales"],
+ ["Charleston, SC","I-95 → I-26",110,"Flatbed: automotriz y acero; hot shot: partials urgentes"],
+ ["Jacksonville, FL","I-95",140,"Dry van: retail; flatbed: construcción"],
+ ["Columbia / Greenville, SC","I-26 → I-85",215,"Flatbed: llantas, BMW, maquinaria"],
+ ["Charlotte, NC","I-95 → I-26 → I-77",255,"Dry van: consumo, muebles; flatbed: construcción"],
+ ["Orlando / Tampa, FL","I-95 → I-4",290,"Dry van: retail inbound; camiones de regreso baratos"],
+ ["Raleigh / Greensboro, NC","I-95 → I-40",330,"Dry van: farmacéutica, muebles; hot shot: partes"],
+ ["Miami, FL","I-95",480,"Dry van: consumo; muchos camiones vacíos de regreso"],
+ ["Richmond / Norfolk, VA","I-95",500,"Dry van: DCs; flatbed: madera, acero"],
+ ["Baltimore / Washington","I-95",640,"Dry van: consumo; flatbed: construcción"],
+ ["Filadelfia / Harrisburg, PA","I-95 / I-81",740,"Dry van: DCs de Lehigh Valley y Harrisburg"],
+ ["Newark / Nueva York","I-95",830,"Dry van: consumo; tarifa alta, regreso barato"],
+];
+
+const LOCALCO = [
+ ["Distribuidores de materiales de construcción","Madera, acero, ladrillo, techos. Flatbed y hot shot a obras en toda la Costa Este.","Savannah / Pooler, GA","building materials supplier lumber yard steel Savannah Pooler"],
+ ["Concesionarios de maquinaria","Caterpillar, John Deere, Kubota, Bobcat: mueven equipo en flatbed y hot shot todos los días.","Savannah / Statesboro, GA","heavy equipment dealer Savannah Georgia Caterpillar John Deere Kubota"],
+ ["Hyundai Metaplant America","Planta de autos y baterías. Cientos de proveedores alrededor (Bryan y Bulloch). Flatbed, dry van, just-in-time.","Ellabell, GA","Hyundai Metaplant America suppliers logistics"],
+ ["International Paper · Savannah Mill","Papel y cartón. Dry van y flatbed de rollos.","Savannah, GA","International Paper Savannah mill shipping"],
+ ["JCB North America","Maquinaria de construcción. Flatbed y step deck.","Pooler, GA","JCB North America Pooler logistics"],
+ ["Gulfstream Aerospace","Aeroespacial. Carga de alto valor y proveedores.","Savannah, GA","Gulfstream Aerospace Savannah suppliers"],
+ ["Great Dane","Fabricante de remolques. Contactos directos con flotas.","Savannah, GA","Great Dane Savannah"],
+ ["Target · Import DC","Centro de distribución. Dry van saliente a DCs regionales del Sureste.","Savannah, GA","Target import distribution center Savannah"],
+ ["IKEA · Distribution Center","Muebles; dry van de alto cubo a tiendas del Sureste.","Port Wentworth, GA","IKEA distribution center Port Wentworth"],
+ ["Home Depot · DC","Materiales de construcción; dry van y flatbed.","Savannah / Pooler, GA","Home Depot distribution center Savannah"],
+ ["Walmart · Import DC","Retail; dry van saliente a tiendas y DCs regionales.","Statesboro, GA","Walmart import distribution center Statesboro"],
+ ["Georgia-Pacific · Savannah River Mill","Papel y yeso. Dry van y flatbed.","Rincon, GA","Georgia-Pacific Savannah River mill"],
+ ["Mitsubishi Power Americas","Turbinas y componentes. Flatbed, step deck y sobredimensionada.","Pooler, GA","Mitsubishi Power Pooler Georgia"],
+ ["Aerospace & auto suppliers · Chatham y Effingham","Parques industriales: Savannah Manufacturing Center, Crossroads, Effingham Industrial Park.","Effingham County, GA","Effingham County industrial park manufacturers"],
+];
+
+const STAGES = ["Nuevo","Contactado","Interesado","Cotizado","Activo","Descartado"];
+const EQ_TERMS = {"Dry van":"dry van","Flatbed":"flatbed","Hot shot":"hot shot gooseneck"};
+
+/* ===================== UTIL ===================== */
+const $ = s=>document.querySelector(s);
+const enc = encodeURIComponent;
+const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const gmaps = q=>`https://www.google.com/maps/search/${enc(q)}`;
+const google = q=>`https://www.google.com/search?q=${enc(q)}`;
+const liPeople = q=>`https://www.linkedin.com/search/results/people/?keywords=${enc(q)}`;
+const liCo = q=>`https://www.linkedin.com/search/results/companies/?keywords=${enc(q)}`;
+const safer = (type,q)=>`https://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=${type}&query_string=${enc(q)}`;
+const todayISO = ()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
+const addDays = n=>{const d=new Date();d.setDate(d.getDate()+n);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const heatFor=(s,season)=>clamp(s.h+(s.adj[season]||0),1,5);
+const seasonNow=()=>{const m=new Date().getMonth();return m<=1||m===11?"invierno":m<=4?"primavera":m<=7?"verano":"otono"};
+function linkItem(title,sub,href,label="Abrir"){return `<li><div class="t"><b>${esc(title)}</b>${sub?`<span>${esc(sub)}</span>`:""}</div><a class="btn sm" href="${href}" target="_blank" rel="noopener">${label}</a></li>`}
+let toastT;function toast(msg){let el=$(".toast");if(!el){el=document.createElement("div");el.className="toast";document.body.appendChild(el)}el.textContent=msg;el.style.opacity=1;clearTimeout(toastT);toastT=setTimeout(()=>el.style.opacity=0,1800)}
+function stateOptions(sel,def){const EASTSET=["ME","NH","VT","MA","RI","CT","NY","NJ","PA","DE","MD","VA","WV","NC","SC","GA","FL"];const opt=s=>`<option value="${s.c}">${s.n} (${s.c})</option>`;const sorted=STATES.slice().sort((a,b)=>a.n.localeCompare(b.n));sel.innerHTML=`<optgroup label="${t("Costa Este")}">${sorted.filter(s=>EASTSET.includes(s.c)).map(opt).join("")}</optgroup><optgroup label="${t("Resto de EE. UU.")}">${sorted.filter(s=>!EASTSET.includes(s.c)).map(opt).join("")}</optgroup>`;sel.value=def}
+
+/* ===================== NAV ===================== */
+const VIEWS=["inicio","mercados","clientes","transportistas","pipeline","guiones"];
+function show(v){
+  if(!VIEWS.includes(v)) v="inicio";
+  VIEWS.forEach(x=>{$("#v-"+x).hidden=x!==v});
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));
+  if(location.hash!=="#"+v) history.replaceState(null,"","#"+v);
+  window.scrollTo({top:0});
+  if(v==="inicio") renderHome();
+}
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(b)show(b.dataset.v)});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)show(b.dataset.go)});
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+
+/* ===================== PIPELINE STORE ===================== */
+const KEY="yex.freight.pipeline.v1";
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);if(Array.isArray(d.prospects))return d.prospects}}catch(e){}
+  return [];
+}
+function save(list){ try{localStorage.setItem(KEY,JSON.stringify({prospects:list,savedAt:new Date().toISOString()}))}catch(e){toast(t("No se pudo guardar en este navegador"))} }
+let prospects=load();
+
+/* ===================== HOME ===================== */
+function renderHome(){
+  const today=todayISO();
+  const cli=prospects.filter(p=>p.type==="cliente"&&p.stage!=="Descartado").length;
+  const car=prospects.filter(p=>p.type==="transportista"&&p.stage!=="Descartado").length;
+  const act=prospects.filter(p=>p.stage==="Activo").length;
+  const due=prospects.filter(p=>p.follow&&p.follow<=today&&p.stage!=="Descartado");
+  $("#kpis").innerHTML=[
+    [cli,"Clientes en pipeline"],[car,"Transportistas en pipeline"],[act,"Activos"],[due.length,"Seguimientos pendientes"],
+    [t(HEAT_LABEL[heatFor(byCode.GA,seasonNow())]),"Georgia ahora"]
+  ].map(([n,l])=>`<div class="kpi"><div class="n">${esc(n)}</div><div class="l">${t(l)}</div></div>`).join("");
+  $("#today").innerHTML = due.length? `<ul class="linklist">${due.sort((a,b)=>a.follow.localeCompare(b.follow)).map(p=>`<li><div class="t"><b>${esc(p.name)}</b><span>${p.type==="cliente"?t("Cliente"):t("Transportista")} · ${esc(p.city||"")} ${esc(p.state||"")} · ${p.follow<today?t("vencido")+" "+p.follow:t("hoy")}</span></div><button class="btn sm" data-edit="${p.id}">${t("Abrir")}</button></li>`).join("")}</ul>`
+    : `<div class="empty">${t("Nada pendiente hoy. Ve a Mercados y elige dónde llamar.")}</div>`;
+  $("#lanes").innerHTML=LANES.map(l=>`<tr><td><b>${esc(t(l[0]))}</b></td><td class="muted">${esc(l[1])}</td><td class="mono" style="text-align:right">${l[2]}</td><td class="muted">${esc(t(l[3]))}</td></tr>`).join("");
+  $("#localco").innerHTML=LOCALCO.map(c=>`<li><div class="t"><b>${esc(t(c[0]))}</b><span>${esc(c[2])} · ${esc(t(c[1]))}</span></div><div style="display:flex;gap:6px;flex-shrink:0"><a class="btn sm" href="${google(c[3])}" target="_blank" rel="noopener">${t("Buscar")}</a><button class="btn sm" data-addco="${esc(t(c[0]))}|${esc(c[2])}">+ Pipeline</button></div></li>`).join("");
+}
+document.addEventListener("click",e=>{
+  const a=e.target.closest("[data-addco]");
+  if(a){const [name,loc]=a.dataset.addco.split("|");const [city,st]=loc.split(",").map(s=>s.trim());openForm({type:"cliente",name,city,state:(st||"GA").slice(0,2),stage:"Nuevo"});}
+  const ed=e.target.closest("[data-edit]");
+  if(ed){const p=prospects.find(x=>x.id===ed.dataset.edit);if(p)openForm(p)}
+});
+
+/* ===================== MERCADOS ===================== */
+let season=seasonNow(), selState="GA", scope="east";
+const EAST=new Set(["ME","NH","VT","MA","RI","CT","NY","NJ","PA","DE","MD","VA","WV","NC","SC","GA","FL"]);
+$("#scope").addEventListener("click",e=>{const b=e.target.closest("button[data-sc]");if(!b)return;scope=b.dataset.sc;document.querySelectorAll("#scope button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.sc===scope));renderMap();renderRanks()});
+function renderSeasons(){
+  $("#seasons").innerHTML=Object.entries(SEASONS).map(([k,v])=>`<button aria-pressed="${k===season}" data-s="${k}">${t(v)}</button>`).join("");
+  $("#legend").innerHTML=[5,4,3,2,1].map(h=>`<span><i class="h${h}" style="background:var(--h${h})"></i>${t(HEAT_LABEL[h])}</span>`).join("");
+}
+$("#seasons").addEventListener("click",e=>{const b=e.target.closest("button[data-s]");if(!b)return;season=b.dataset.s;renderSeasons();renderMap();renderRanks();renderStateDetail()});
+function renderMap(){
+  $("#map").innerHTML=STATES.map(s=>{const h=heatFor(s,season);return `<button class="tile h${h}${scope==="east"&&!EAST.has(s.c)?" dim":""}" style="grid-column:${s.x+1};grid-row:${s.y+1}" data-st="${s.c}" aria-pressed="${s.c===selState}" title="${esc(s.n)}: ${t(HEAT_LABEL[h])}">${s.c}</button>`}).join("");
+}
+$("#map").addEventListener("click",e=>{const b=e.target.closest("[data-st]");if(!b)return;selState=b.dataset.st;renderMap();renderStateDetail()});
+function renderRanks(){
+  const list=STATES.filter(s=>scope==="all"||EAST.has(s.c)).map(s=>({s,h:heatFor(s,season)}));
+  const hot=list.filter(x=>x.h>=4).sort((a,b)=>b.h-a.h||a.s.n.localeCompare(b.s.n)).slice(0,10);
+  const cold=list.filter(x=>x.h<=2).sort((a,b)=>a.h-b.h||a.s.n.localeCompare(b.s.n)).slice(0,10);
+  const row=x=>`<li><span class="code">${x.s.c}</span><span style="flex:0 0 130px">${esc(x.s.n)}</span><span class="bar"><i style="width:${x.h*20}%;background:var(--h${x.h})"></i></span><button class="btn sm" data-st2="${x.s.c}">${t("Ver")}</button></li>`;
+  $("#rankHot").innerHTML=hot.map(row).join("")||`<li class='muted'>${t("Ninguno en esta temporada")}</li>`;
+  $("#rankCold").innerHTML=cold.map(row).join("")||`<li class='muted'>${t("Ninguno en esta temporada")}</li>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-st2]");if(!b)return;selState=b.dataset.st2;renderMap();renderStateDetail();$("#stateDetail").scrollIntoView({behavior:"smooth",block:"nearest"})});
+function renderStateDetail(){
+  const s=byCode[selState],h=heatFor(s,season),hub=t(s.hubs).split(",")[0].trim();
+  const seasonal=Object.entries(s.adj).filter(([k,v])=>v).map(([k,v])=>`${t(SEASONS[k]).split(" ·")[0]} ${v>0?"+":""}${v}`).join(", ");
+  $("#stateDetail").innerHTML=`
+    <div class="ph"><div><div class="eyebrow">${s.c}</div><h2>${esc(s.n)}</h2></div><span class="heat h${h}">${t(HEAT_LABEL[h])}</span></div>
+    <div class="pb" style="display:flex;flex-direction:column;gap:14px">
+      <p>${t(HEAT_HINT[h])}</p>
+      ${seasonal?`<p class="note">${t("Variación estacional:")} ${esc(seasonal)}.</p>`:""}
+      <div><h4>${t("Industrias que generan carga")}</h4><p>${esc(t(s.ind))}</p></div>
+      <div><h4>Hubs</h4><p>${esc(t(s.hubs))}</p></div>
+      <ul class="linklist">
+        ${linkItem(t("Buscar clientes aquí"),t("Centros de distribución y fábricas en")+" "+hub,gmaps(`distribution center manufacturing plant ${hub} ${s.n}`),t("Mapa"))}
+        ${linkItem(t("Buscar transportistas aquí"),t("Compañías de camiones en")+" "+hub,gmaps(`trucking company ${hub} ${s.n}`),t("Mapa"))}
+        ${linkItem(s.assoc,t("Asociación estatal: directorio de miembros y eventos"),google(s.assoc),t("Buscar"))}
+        ${linkItem(t("Tarifas y ratio carga/camión"),t("DAT Trendlines, actualizado semanalmente"),"https://www.dat.com/trendlines",t("Abrir"))}
+      </ul>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn sm" data-prefill="clientes|${s.c}">${t("Buscar clientes en")} ${s.c}</button>
+        <button class="btn sm" data-prefill="transportistas|${s.c}">${t("Buscar transportistas en")} ${s.c}</button>
+      </div>
+    </div>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-prefill]");if(!b)return;const [v,st]=b.dataset.prefill.split("|");if(v==="clientes"){$("#cState").value=st;renderClientes()}else{$("#tState").value=st;renderTrans()}show(v)});
+
+/* ===================== CLIENTES ===================== */
+let selInd=new Set(["Centros de distribución","Fábricas / manufactura"]);
+function renderIndChips(){$("#cInd").innerHTML=INDUSTRIES.map(([n,term,eq])=>`<button class="chip" aria-pressed="${selInd.has(n)}" data-ind="${esc(n)}">${esc(t(n))} <span class="muted small">· ${eq}</span></button>`).join("")}
+$("#cInd").addEventListener("click",e=>{const b=e.target.closest("[data-ind]");if(!b)return;const n=b.dataset.ind;selInd.has(n)?selInd.delete(n):selInd.add(n);renderIndChips();renderClientes()});
+function renderClientes(){
+  const s=byCode[$("#cState").value],city=$("#cCity").value.trim(),eq=$("#cEquip").value,h=heatFor(s,season);
+  const where=city?`${city}, ${s.n}`:s.n, hub=city||t(s.hubs).split(",")[0].trim();
+  $("#cStateInfo").innerHTML=`<span class="heat h${h}">${t(HEAT_LABEL[h])}</span> &nbsp; ${esc(s.n)}: ${esc(t(s.ind))}. Hubs: ${esc(t(s.hubs))}.`;
+  const items=[];
+  INDUSTRIES.filter(([n])=>selInd.has(n)).forEach(([n,term])=>{
+    items.push(linkItem(t(n)+" "+t("en")+" "+where,t("Google Maps: lista con teléfono y dirección"),gmaps(`${term} ${hub} ${s.n}`),t("Mapa")));
+  });
+  items.push(linkItem(t("Gerentes de logística en")+" "+s.n,t("LinkedIn: personas con cargo de transporte/logística"),liPeople(`logistics manager ${eq?EQ_TERMS[eq]||"":""} ${where}`),"LinkedIn"));
+  items.push(linkItem(t("Shipping managers vía Google"),t("Perfiles públicos sin cuenta premium"),google(`site:linkedin.com/in ("shipping manager" OR "transportation manager" OR "logistics manager") "${where}"`),"Google"));
+  items.push(linkItem(t("Empresas que anuncian vacantes de embarque"),t("Quien contrata shipping clerks mueve mucha carga"),google(`"shipping" OR "logistics" jobs ${where} manufacturer distribution`),"Google"));
+  if(eq==="Hot shot"||selInd.has("Constructoras y contratistas")) items.push(linkItem(t("Obras y proyectos en curso en")+" "+hub,t("Constructoras con proyectos activos piden hot shot y flatbed con urgencia"),google(`construction projects underway ${hub} ${s.n} 2026 contractor`),"Google"));
+  if(eq==="Flatbed"||eq==="Hot shot") items.push(linkItem(t("Empresas que anuncian 'flatbed' o 'hot shot' en sus envíos"),t("Quien lo menciona en su web ya lo compra"),google(`("flatbed" OR "hot shot" OR "hotshot") shipping supplier ${where} -jobs -driver`),"Google"));
+  if(s.c==="GA") items.push(linkItem(t("DCs alrededor del Puerto de Savannah"),t("Embarcan en dry van hacia el interior; no cubrimos contenedores"),gmaps(`distribution center Savannah Pooler Port Wentworth GA`),t("Mapa")));
+  $("#cLinks").innerHTML=items.join("");
+  $("#cDirs").innerHTML=[
+    linkItem("ThomasNet",t("Directorio de fabricantes por producto y estado"),"https://www.thomasnet.com/",t("Abrir")),
+    linkItem(t("Directorio de fabricantes de")+" "+s.n,t("Cámaras y agencias de desarrollo publican listas por condado"),google(`${s.n} manufacturers directory list by county`),t("Buscar")),
+    linkItem(t("Parques industriales de")+" "+hub,t("Cada parque tiene su lista de inquilinos"),google(`${hub} ${s.n} industrial park tenants list`),t("Buscar")),
+    linkItem("Census · County Business Patterns",t("Cuántas fábricas y almacenes hay por condado (NAICS 31–33, 493)"),"https://data.census.gov/",t("Abrir")),
+    linkItem("Georgia Ports Authority",t("Estadísticas, eventos y contactos del puerto"),"https://gaports.com/",t("Abrir")),
+  ].join("");
+}
+["#cState","#cCity","#cEquip"].forEach(id=>$(id).addEventListener("input",renderClientes));
+
+/* ===================== TRANSPORTISTAS ===================== */
+function renderVerify(){
+  const vt=$("#vType").value,q=$("#vQ").value.trim();
+  $("#vGo").href=q?safer(vt,q):"https://safer.fmcsa.dot.gov/CompanySnapshot.aspx";
+  $("#vLinks").innerHTML=[
+    linkItem("SAFER Company Snapshot",t("Autoridad, flota, inspecciones, rating"),"https://safer.fmcsa.dot.gov/CompanySnapshot.aspx",t("Abrir")),
+    linkItem("Licensing & Insurance (L&I)",t("Seguro vigente y aseguradora registrada"),"https://li-public.fmcsa.dot.gov/",t("Abrir")),
+    linkItem("SMS · Safety Measurement System",t("Alertas BASIC: horas de servicio, mantenimiento, choques"),"https://ai.fmcsa.dot.gov/SMS/",t("Abrir")),
+    linkItem(t("Buscar quejas y fraude"),t("Google: nombre del carrier + double brokering / scam"),google(`"${q||t("nombre del carrier")}" trucking reviews double brokering`),"Google"),
+  ].join("");
+}
+["#vType","#vQ"].forEach(id=>$(id).addEventListener("input",renderVerify));
+function renderTrans(){
+  const s=byCode[$("#tState").value],city=$("#tCity").value.trim(),eq=$("#tEquip").value,h=heatFor(s,season);
+  const hub=city||t(s.hubs).split(",")[0].trim(), where=city?`${city}, ${s.n}`:s.n, eqt=eq?EQ_TERMS[eq]:"";
+  $("#tStateInfo").innerHTML=`<span class="heat h${h}">${t(HEAT_LABEL[h])}</span> &nbsp; ${h<=2?t("Mercado frío: buen sitio para reclutar carriers que quieren salir con tarifa baja."):h>=4?t("Mercado caliente: los carriers de aquí cobran alto; úsalo para carga saliente, no para reclutar barato."):t("Mercado equilibrado.")} Hubs: ${esc(t(s.hubs))}.`;
+  $("#tLinks").innerHTML=[
+    linkItem(`${t("Compañías de camiones en")} ${hub}`,t("Google Maps: flotas locales con teléfono"),gmaps(`${eqt} trucking company ${hub} ${s.n}`),t("Mapa")),
+    linkItem(`Owner-operators ${eq||""} ${t("en")} ${s.n}`,t("Google: perfiles, anuncios y grupos"),google(`owner operator ${eqt} ${where} "MC"`),"Google"),
+    linkItem(t("Transportistas hispanos en")+" "+s.n,t("Facebook y grupos en español"),google(`camioneros OR transportistas ${where} facebook grupo ${eqt}`),"Google"),
+    linkItem(t("Carriers en LinkedIn"),t("Empresas de transporte con sede en")+" "+where,liCo(`trucking ${eqt} ${where}`),"LinkedIn"),
+    linkItem(s.assoc,t("Directorio de miembros de la asociación estatal"),google(s.assoc+" member directory"),t("Buscar")),
+    linkItem(t("Truck stops cerca de")+" "+hub,t("Pilot, Love's, TA: tablones y choferes en persona"),gmaps(`truck stop ${hub} ${s.n}`),t("Mapa")),
+  ].join("");
+  $("#tNat").innerHTML=[
+    linkItem("DAT One",t("Load board líder; publica cargas y ve camiones disponibles"),"https://www.dat.com/",t("Abrir")),
+    linkItem("Truckstop.com",t("Load board con verificación de carriers (RMIS)"),"https://truckstop.com/",t("Abrir")),
+    linkItem("123Loadboard",t("Load board económico, muchos owner-operators"),"https://www.123loadboard.com/",t("Abrir")),
+    linkItem("OOIDA",t("Asociación de owner-operators independientes"),"https://www.ooida.com/",t("Abrir")),
+    linkItem("American Trucking Associations",t("Federación de asociaciones estatales"),"https://www.trucking.org/",t("Abrir")),
+    linkItem("Highway / Carrier Assure / MyCarrierPackets",t("Verificación de identidad de carriers y alta digital"),google("Highway carrier identity OR MyCarrierPackets OR Carrier Assure onboarding brokers"),t("Buscar")),
+  ].join("");
+}
+["#tState","#tCity","#tEquip"].forEach(id=>$(id).addEventListener("input",renderTrans));
+
+/* ===================== PIPELINE UI ===================== */
+let stageFilter="";
+function renderPipeline(){
+  const today=todayISO();
+  $("#stages").innerHTML=[["","Todos",prospects.length],...STAGES.map(s=>[s,s,prospects.filter(p=>p.stage===s).length])].map(([k,l,n])=>`<button class="stage" aria-pressed="${stageFilter===k}" data-stage="${k}"><b>${n}</b><span>${t(l)}</span></button>`).join("");
+  const q=$("#pQ").value.trim().toLowerCase(),type=$("#pType").value,sort=$("#pSort").value;
+  let list=prospects.filter(p=>(!stageFilter||p.stage===stageFilter)&&(!type||p.type===type)&&(!q||[p.name,p.city,p.contact,p.mc,p.lane,p.notes,p.state].join(" ").toLowerCase().includes(q)));
+  list.sort((a,b)=>sort==="name"?a.name.localeCompare(b.name):sort==="updated"?(b.updated||0)-(a.updated||0):((a.follow||"9999")+a.name).localeCompare((b.follow||"9999")+b.name));
+  $("#cards").innerHTML=list.length?list.map(p=>{
+    const fl=!p.follow?"":p.follow<today?`<span class="tag late">${t("Vencido")} ${p.follow}</span>`:p.follow===today?`<span class="tag due">${t("Hoy")}</span>`:`<span class="tag">${p.follow}</span>`;
+    return `<div class="card ${p.type}">
+      <div class="ct"><div class="name">${esc(p.name)}</div><span class="tag">${t(p.stage)}</span></div>
+      <div class="meta"><span>${p.type==="cliente"?t("Cliente"):t("Transportista")}</span>${p.city||p.state?`<span>${esc(p.city||"")} ${esc(p.state||"")}</span>`:""}${p.equip?`<span>${esc(p.equip)}</span>`:""}${p.mc?`<span class="mono">${esc(p.mc)}</span>`:""}</div>
+      ${p.lane?`<div class="small">${esc(p.lane)}</div>`:""}
+      ${p.contact?`<div class="small muted">${esc(p.contact)}</div>`:""}
+      ${p.notes?`<div class="small" style="color:var(--ink2);white-space:pre-wrap">${esc(p.notes)}</div>`:""}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${fl}</div>
+      <div class="acts">
+        ${p.phone?`<a class="btn sm" href="tel:${esc(p.phone)}">${t("Llamar")}</a>`:""}
+        ${p.email?`<a class="btn sm" href="mailto:${esc(p.email)}">${t("Correo")}</a>`:""}
+        ${p.type==="transportista"&&p.mc?`<a class="btn sm" href="${safer(/dot/i.test(p.mc)&&!/mc/i.test(p.mc)?"USDOT":"MC_MX",(p.mc.match(/\d+/)||[""])[0])}" target="_blank" rel="noopener">FMCSA</a>`:""}
+        <button class="btn sm" data-edit="${p.id}">${t("Editar")}</button>
+        <button class="btn sm" data-next="${p.id}">${t("Siguiente etapa")}</button>
+      </div>
+    </div>`}).join(""):`<div class="empty" style="grid-column:1/-1">${t('Todavía no hay prospectos aquí. Añade uno con "+ Nuevo prospecto" o desde las búsquedas de Clientes y Transportistas.')}</div>`;
+}
+$("#stages").addEventListener("click",e=>{const b=e.target.closest("[data-stage]");if(!b)return;stageFilter=b.dataset.stage;renderPipeline()});
+["#pQ","#pType","#pSort"].forEach(id=>$(id).addEventListener("input",renderPipeline));
+document.addEventListener("click",e=>{
+  const n=e.target.closest("[data-next]");if(!n)return;
+  const p=prospects.find(x=>x.id===n.dataset.next);if(!p)return;
+  const i=STAGES.indexOf(p.stage);if(i<0||i>=STAGES.length-2){toast(t("Ya está en la última etapa activa"));return}
+  p.stage=STAGES[i+1];p.updated=Date.now();save(prospects);renderPipeline();toast(`${p.name}: ${t(p.stage)}`);
+});
+
+/* form */
+const dlg=$("#dlg"),form=$("#pForm");
+function fillStages(){const v=$("#fStage").value;$("#fStage").innerHTML=STAGES.map(s=>`<option value="${s}">${t(s)}</option>`).join("");if(v)$("#fStage").value=v}
+fillStages();
+stateOptions($("#fState"),"GA");
+function openForm(p={}){
+  form.reset();
+  $("#dlgTitle").textContent=p.id?t("Editar prospecto"):t("Nuevo prospecto");
+  $("#dlgDelete").hidden=!p.id;
+  for(const el of form.elements){ if(el.name && p[el.name]!==undefined) el.value=p[el.name]; }
+  if(!p.state) form.elements.state.value="GA";
+  if(!p.stage) form.elements.stage.value="Nuevo";
+  dlg.showModal();
+}
+$("#btnAdd").addEventListener("click",()=>openForm());
+$("#dlgClose").addEventListener("click",()=>dlg.close());
+form.addEventListener("submit",e=>{
+  e.preventDefault();
+  const fd=new FormData(form),o={};fd.forEach((v,k)=>o[k]=String(v).trim());
+  if(!o.name){return}
+  let p=prospects.find(x=>x.id===o.id);
+  if(!p){p={id:"p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)};prospects.unshift(p)}
+  Object.assign(p,o,{id:p.id,updated:Date.now()});
+  save(prospects);dlg.close();renderPipeline();renderHome();toast(t("Guardado"));
+  if($("#v-pipeline").hidden && $("#v-inicio").hidden) show("pipeline");
+});
+$("#dlgDelete").addEventListener("click",()=>{
+  const id=form.elements.id.value;const p=prospects.find(x=>x.id===id);
+  if(p&&confirm(lang==="en"?`Delete "${p.name}"?`:`¿Eliminar "${p.name}"?`)){prospects=prospects.filter(x=>x.id!==id);save(prospects);dlg.close();renderPipeline();renderHome();toast(t("Eliminado"))}
+});
+
+/* backup */
+$("#btnBackup").addEventListener("click",()=>{$("#backupPanel").hidden=false;$("#backupText").value=JSON.stringify({prospects},null,1);$("#backupPanel").scrollIntoView({behavior:"smooth"})});
+$("#btnBackupClose").addEventListener("click",()=>$("#backupPanel").hidden=true);
+$("#btnCopy").addEventListener("click",async()=>{try{await navigator.clipboard.writeText($("#backupText").value);toast(t("Copiado"))}catch(e){$("#backupText").select();toast(t("Selecciona y copia el texto"))}});
+$("#btnImport").addEventListener("click",()=>{
+  try{const d=JSON.parse($("#backupText").value);if(!Array.isArray(d.prospects))throw 0;
+    if(confirm(lang==="en"?`Import ${d.prospects.length} prospects and replace the current ${prospects.length}?`:`¿Importar ${d.prospects.length} prospectos y reemplazar los ${prospects.length} actuales?`)){prospects=d.prospects.filter(p=>p&&p.id&&p.name);save(prospects);renderPipeline();renderHome();toast(t("Importado"))}
+  }catch(e){toast(t("El texto no es un respaldo válido"))}
+});
+
+/* ===================== INIT ===================== */
+function renderAll(){
+  const cs=$("#cState").value||"GA",ts=$("#tState").value||"GA",fs=$("#fState").value||"GA";
+  stateOptions($("#cState"),cs);stateOptions($("#tState"),ts);stateOptions($("#fState"),fs);fillStages();
+  renderSeasons();renderMap();renderRanks();renderStateDetail();
+  renderIndChips();renderClientes();renderVerify();renderTrans();renderPipeline();renderHome();
+}
+function setLang(l){lang=l==="en"?"en":"es";try{localStorage.setItem("yex.lang",lang)}catch(e){}applyStatic();renderAll()}
+$("#lang").addEventListener("click",e=>{const b=e.target.closest("button[data-l]");if(b)setLang(b.dataset.l)});
+applyStatic();renderAll();
+show(location.hash.slice(1)||"inicio");
+</script>
